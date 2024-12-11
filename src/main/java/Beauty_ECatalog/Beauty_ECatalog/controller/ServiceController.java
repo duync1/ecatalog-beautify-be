@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,7 +29,7 @@ public class ServiceController {
         this.serviceService = serviceService;
     }
 
-    @GetMapping("/Service/{id}")
+    @GetMapping("/services/{id}")
     public ResponseEntity<Servicee> getService(@PathVariable("id") long id) throws IdInvalidException{
         Servicee servicee = this.serviceService.getService(id);
         if(servicee == null){
@@ -49,6 +50,7 @@ public class ServiceController {
         servicee.setPrice(price);
         servicee.setShortDescription(shortDesc);
         servicee.setDetailDescription(detailDesc);
+        servicee.setDeleted(false);
         return ResponseEntity.ok().body(this.serviceService.createService(servicee, img));
     }
 
@@ -57,5 +59,38 @@ public class ServiceController {
         return ResponseEntity.ok().body(this.serviceService.fetchAllServices(spec, pageable));
     }
 
-     
+    @GetMapping("/Service/Back/{id}")
+    public ResponseEntity<Void> backService(@PathVariable("id") long id){
+        this.serviceService.backService(id);
+        return ResponseEntity.ok().body(null);
+    }
+
+    @DeleteMapping("/Service/{id}")
+    public ResponseEntity<Void> deleteService(@PathVariable("id") long id){
+        this.serviceService.deleteService(id);
+        return ResponseEntity.ok().body(null);
+    }
+    
+    @PutMapping("/Service")
+    public ResponseEntity<Servicee> updateService(@RequestParam("id") long id, @RequestParam("name") String name, @RequestParam("price") int price, 
+    @RequestParam("shortDesc") String shortDesc, @RequestParam("detailDesc") String detailDesc, @RequestParam(value = "image", required = false) MultipartFile img) throws IdInvalidException, IOException{
+        Servicee servicee = this.serviceService.getService(id);
+        if(!servicee.getName().equals(name)){
+            boolean check = this.serviceService.checkExistService(name);
+            if(check){
+                throw new IdInvalidException("Service da ton tai");
+            }
+        }
+        Servicee updateService = new Servicee();
+        updateService.setId(id);
+        updateService.setName(name);
+        updateService.setPrice(price);
+        updateService.setShortDescription(shortDesc);
+        updateService.setDetailDescription(detailDesc);
+        Servicee resultService = this.serviceService.updateService(updateService, img);
+        if(resultService == null){
+            throw new IdInvalidException("Service khong ton tai");
+        }
+        return ResponseEntity.ok().body(resultService);
+    }
 }

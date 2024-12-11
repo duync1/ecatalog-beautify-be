@@ -1,5 +1,7 @@
 package Beauty_ECatalog.Beauty_ECatalog.controller;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +11,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.turkraft.springfilter.boot.Filter;
+
 import Beauty_ECatalog.Beauty_ECatalog.domain.Category;
+import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResultPaginationDTO;
 import Beauty_ECatalog.Beauty_ECatalog.service.CategoryService;
 import Beauty_ECatalog.Beauty_ECatalog.util.error.IdInvalidException;
 
@@ -30,7 +35,11 @@ public class CategoryController {
     }
 
     @PostMapping("/Category")
-    public ResponseEntity<Category> createCategory(@RequestBody Category category){
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) throws IdInvalidException{
+        boolean check = this.categoryService.checkExists(category.getName());
+        if(check){
+            throw new IdInvalidException("Category da ton tai");
+        }
         return ResponseEntity.ok().body(this.categoryService.createCategory(category));
     }
 
@@ -46,6 +55,17 @@ public class CategoryController {
     @DeleteMapping("/Category/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable("id") long id){
         this.categoryService.deleteCategory(id);
+        return ResponseEntity.ok().body(null);
+    }
+
+    @GetMapping("/Category")
+    public ResponseEntity<ResultPaginationDTO> getAllCategories(@Filter Specification<Category> spec, Pageable pageable){
+        return ResponseEntity.ok().body(this.categoryService.fetchAllCategories(spec, pageable));
+    }
+
+    @GetMapping("/Category/Back/{id}")
+    public ResponseEntity<Void> backCategory(@PathVariable("id") long id){
+        this.categoryService.dontDeleteCategory(id);
         return ResponseEntity.ok().body(null);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,7 +42,7 @@ public class ProductController {
 
     @PostMapping("/Product")
     public ResponseEntity<Product> createProduct(@RequestParam("name") String name, @RequestParam("unitPrice") int price, 
-        @RequestParam("image") MultipartFile image, @RequestParam("brand") String brand, @RequestParam("Category") String categoryName
+        @RequestParam("image") MultipartFile image, @RequestParam("brand") String brand, @RequestParam("category") String categoryName, @RequestParam("detailDescription") String description
     ) throws IOException, IdInvalidException{
         if(this.productService.findProductByName(name)){
             throw new IdInvalidException("Ten san pham da ton tai");
@@ -50,6 +51,8 @@ public class ProductController {
         product.setName(name);
         product.setUnitPrice(price);
         product.setBrand(brand);
+        product.setDetailDescription(description);
+        product.setDeleted(false);
         return ResponseEntity.ok().body(this.productService.createProduct(product, image, categoryName));
     }
 
@@ -64,6 +67,32 @@ public class ProductController {
         return ResponseEntity.ok().body(null);
     }
 
+    @GetMapping("/Product/Back/{id}")
+    public ResponseEntity<Void> backProduct(@PathVariable("id") long id){
+        this.productService.backProduct(id);
+        return ResponseEntity.ok().body(null);
+    }
     
+    @PutMapping("/Product")
+    public ResponseEntity<Product> updateProduct(@RequestParam("id") long id, @RequestParam("name") String name, @RequestParam("unitPrice") int price, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam("brand") String brand, @RequestParam("category") String categoryName, @RequestParam("detailDescription") String description) throws IdInvalidException, IOException{
+        Product temp = this.productService.getProductById(id);
+        if(!temp.getName().equals(name)){
+            boolean check = this.productService.findProductByName(name);
+            if(check){
+                throw new IdInvalidException("Ten san pham da ton tai");
+            }
+        }
+        Product product = new Product();
+        product.setId(id);
+        product.setName(name);
+        product.setUnitPrice(price);
+        product.setBrand(brand);
+        product.setDetailDescription(description);
+        Product updateProduct = this.productService.updateProduct(product, image, categoryName);
+        if(updateProduct == null){
+            throw new IdInvalidException("San pham khong ton tai");
+        }
+        return ResponseEntity.ok().body(updateProduct);
+    }
     
 }

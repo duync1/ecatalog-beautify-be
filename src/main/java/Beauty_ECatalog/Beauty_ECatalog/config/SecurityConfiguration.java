@@ -43,7 +43,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
             CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
-        String[] whiteList = { "/User/Login", "/auth/refresh", "/User/Register", "/Product/**", "/uploads/**", "/Service/**"
+        String[] whiteList = { "/User/Login", "/auth/refresh", "/User/Register", "/Product/**", "/uploads/**", "/Service/**", "/Category/**", "/services/**"
         };
         http
                 .csrf(c -> c.disable())

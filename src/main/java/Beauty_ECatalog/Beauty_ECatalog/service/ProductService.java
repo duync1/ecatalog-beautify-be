@@ -45,20 +45,21 @@ public class ProductService {
     }
 
     private String saveImage(MultipartFile imageFile) throws IOException {
-        if (imageFile.isEmpty()) {
-            throw new IllegalArgumentException("Image file is empty");
+        if (imageFile == null || imageFile.isEmpty()) {
+            return null; // Hoặc trả về giá trị mặc định nếu không có ảnh mới
         }
         Path path = Paths.get(uploadDir);
         if (!Files.exists(path)) {
             Files.createDirectories(path);
         }
-
+    
         String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
         Path filePath = path.resolve(fileName);
         Files.write(filePath, imageFile.getBytes());
-
+    
         return "/uploads/" + fileName;
     }
+    
 
     public ResultPaginationDTO fetchAllProducts(Specification<Product> spec, Pageable pageable) {
         Page<Product> page = this.productRepository.findAll(spec, pageable);
@@ -82,10 +83,33 @@ public class ProductService {
     }
 
     public void deleteProduct(long id){
-        this.productRepository.deleteById(id);
+        Product product = this.getProductById(id);
+        product.setDeleted(true);
+        this.productRepository.save(product);
     }
 
-    // public Product updateProduct(Product product){
+    public void backProduct(long id){
+        Product product = this.getProductById(id);
+        product.setDeleted(false);
+        this.productRepository.save(product);
+    }
 
-    // }
+    public Product updateProduct(Product product, MultipartFile multipartFile, String categoryName) throws IOException {
+        Product currentProduct = this.getProductById(product.getId());
+        if (currentProduct != null) {
+            currentProduct.setName(product.getName());
+            currentProduct.setBrand(product.getBrand());
+            currentProduct.setUnitPrice(product.getUnitPrice());
+            currentProduct.setDetailDescription(product.getDetailDescription());
+            if (multipartFile != null && !multipartFile.isEmpty()) {
+                String imagePath = saveImage(multipartFile);
+                currentProduct.setProductImage(imagePath);
+            }
+            Category category = this.categoryRepository.findByName(categoryName);
+            currentProduct.setCategory(category);
+            return this.productRepository.save(currentProduct);
+        }
+        return null;
+    }
+    
 }

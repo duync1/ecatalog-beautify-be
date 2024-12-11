@@ -46,35 +46,49 @@ public class ServiceService {
     }
 
     private String saveImage(MultipartFile imageFile) throws IOException {
-        if (imageFile.isEmpty()) {
-            throw new IllegalArgumentException("Image file is empty");
+        if (imageFile == null || imageFile.isEmpty()) {
+            return null; // Hoặc trả về giá trị mặc định nếu không có ảnh mới
         }
         Path path = Paths.get(uploadDir);
         if (!Files.exists(path)) {
             Files.createDirectories(path);
         }
-
+    
         String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
         Path filePath = path.resolve(fileName);
         Files.write(filePath, imageFile.getBytes());
-
+    
         return "/uploads/" + fileName;
     }
 
-    // public Servicee updateService(Servicee servicee){
-    //     Servicee currentService = this.getService(servicee.getId());
-    //     if(currentService != null){
-    //         currentService.setName(servicee.getName());
-    //         currentService.setPrice(servicee.getPrice());
-    //         currentService.setShortDescription(servicee.getShortDescription());
-    //         currentService.setDetailDescription(servicee.getDetailDescription());
-    //     }
-    // }
-
-    public void deleteService(long id){
-        this.serviceRepository.deleteById(id);
+    public Servicee updateService(Servicee servicee, MultipartFile multipartFile) throws IOException{
+        Servicee currentService = this.getService(servicee.getId());
+        if(currentService != null){
+            currentService.setName(servicee.getName());
+            currentService.setPrice(servicee.getPrice());
+            currentService.setShortDescription(servicee.getShortDescription());
+            currentService.setDetailDescription(servicee.getDetailDescription());
+            if (multipartFile != null && !multipartFile.isEmpty()) {
+                String imagePath = saveImage(multipartFile);
+                currentService.setServiceImage(imagePath);
+            }
+            return this.serviceRepository.save(currentService);
+        }
+        return null;
     }
 
+    public void deleteService(long id){
+        Servicee servicee = this.getService(id);
+        servicee.setDeleted(true);
+        this.serviceRepository.save(servicee);
+    }
+
+    public void backService(long id){
+        Servicee servicee = this.getService(id);
+        servicee.setDeleted(false);
+        this.serviceRepository.save(servicee);
+    }
+    
     public ResultPaginationDTO fetchAllServices(Specification<Servicee> spec, Pageable pageable) {
         Page<Servicee> page = this.serviceRepository.findAll(spec, pageable);
         ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();

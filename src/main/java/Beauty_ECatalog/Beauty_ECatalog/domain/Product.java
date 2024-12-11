@@ -2,6 +2,7 @@ package Beauty_ECatalog.Beauty_ECatalog.domain;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +29,10 @@ public class Product {
     private String name;
     private int unitPrice;
     private String productImage;
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String detailDescription;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
     private String brand;
     @ManyToOne
     @JoinColumn(name = "category_id")

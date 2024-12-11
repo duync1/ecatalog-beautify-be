@@ -34,6 +34,8 @@ public class Servicee {
     @Column(columnDefinition = "MEDIUMTEXT")
     private String detailDescription;
     private String serviceImage;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
     @OneToMany(mappedBy = "service", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ServiceTicketDetail> serviceTicketDetails;
