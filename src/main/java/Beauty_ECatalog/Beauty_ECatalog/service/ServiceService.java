@@ -101,4 +101,8 @@ public class ServiceService {
         resultPaginationDTO.setResult(page.getContent());
         return resultPaginationDTO;
     }
+
+    public Servicee findByName(String name){
+        return this.serviceRepository.findByName(name);
+    }
 }

@@ -46,7 +46,7 @@ public class UserService {
         this.userRepository.delete(user);
     }
     public User handleUpdateUser(User user){
-        User currentUser = this.fetchUserById(user.getId());
+        User currentUser = this.userRepository.save(user);
         return currentUser;
     }
 
@@ -62,5 +62,9 @@ public class UserService {
     }
     public User getUserByRefreshTokenAndEmail(String token, String email) {
         return this.userRepository.findByRefreshTokenAndEmail(token, email);
+    }
+
+    public User getUserByName(String name){
+        return this.userRepository.findByName(name);
     }
 }
