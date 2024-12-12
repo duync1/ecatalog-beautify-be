@@ -1,5 +1,7 @@
 package Beauty_ECatalog.Beauty_ECatalog.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import Beauty_ECatalog.Beauty_ECatalog.domain.ServiceTicket;
 import Beauty_ECatalog.Beauty_ECatalog.domain.ServiceTicketDetail;
 import Beauty_ECatalog.Beauty_ECatalog.domain.Servicee;
 import Beauty_ECatalog.Beauty_ECatalog.domain.User;
+import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResServiceTicketDetail;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResultPaginationDTO;
 
 import Beauty_ECatalog.Beauty_ECatalog.repository.ServiceTicketRepository;
@@ -78,5 +81,15 @@ public class ServiceTicketService {
         ServiceTicket currentTicket = this.getServiceTicket(serviceTicket.getId());
         currentTicket.setCheckout(true);
         return this.serviceTicketRepository.save(currentTicket);
+    }
+
+    public ResServiceTicketDetail getDetailOfSericeTicket(ServiceTicket serviceTicket){
+        List<ServiceTicketDetail> listServiceTicketDetail = this.serviceTicketDetailService.getDetailByServiceTicket(serviceTicket);
+        List<Servicee> listServices = new ArrayList<>();
+        for(ServiceTicketDetail serviceTicketDetail : listServiceTicketDetail){
+            listServices.add(serviceTicketDetail.getService());
+        }
+        ResServiceTicketDetail resServiceTicketDetail = new ResServiceTicketDetail(serviceTicket, listServices);
+        return resServiceTicketDetail;
     }
 }

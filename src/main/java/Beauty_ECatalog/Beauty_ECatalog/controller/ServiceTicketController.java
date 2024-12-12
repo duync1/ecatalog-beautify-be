@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.turkraft.springfilter.boot.Filter;
 
 import Beauty_ECatalog.Beauty_ECatalog.domain.ServiceTicket;
+import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResServiceTicketDetail;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResultPaginationDTO;
 import Beauty_ECatalog.Beauty_ECatalog.service.ServiceTicketService;
 import Beauty_ECatalog.Beauty_ECatalog.util.error.IdInvalidException;
@@ -45,10 +46,11 @@ public class ServiceTicketController {
 
     // }
 
-    // @GetMapping("/ServiceTickets/{id}")
-    // public ResponseEntity<ServiceTicket> getServiceTicketDetail(@PathVariable("id") long id){
-
-    // }
+    @GetMapping("/ServiceTickets/Detail/{id}")
+    public ResponseEntity<ResServiceTicketDetail> getServiceTicketDetail(@PathVariable("id") long id){
+        ServiceTicket serviceTicket = this.serviceTicketService.getServiceTicket(id);
+        return ResponseEntity.ok().body(this.serviceTicketService.getDetailOfSericeTicket(serviceTicket));
+    }
 
     @PostMapping("/ServiceTickets/confirmServiceTicket")
     public ResponseEntity<ServiceTicket> confirmServiceTicket(@RequestParam("id") long id) throws IdInvalidException{
