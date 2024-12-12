@@ -1,5 +1,7 @@
 package Beauty_ECatalog.Beauty_ECatalog.service;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -56,5 +58,25 @@ public class ServiceTicketService {
         serviceTicketDetail.setServiceTicket(saveServiceTicket);
         serviceTicketDetail = this.serviceTicketDetailService.createServiceTicketDetail(serviceTicketDetail);
         return saveServiceTicket;
+    }
+
+    public ServiceTicket getServiceTicket(long id){
+        Optional<ServiceTicket> serviceTicket = this.serviceTicketRepository.findById(id);
+        if(serviceTicket.isPresent()){
+            return serviceTicket.get();
+        }
+        return null;
+    }
+
+    public ServiceTicket confirmServiceTicket(ServiceTicket serviceTicket){
+        ServiceTicket currentTicket = this.getServiceTicket(serviceTicket.getId());
+        currentTicket.setStatus(true);
+        return this.serviceTicketRepository.save(currentTicket);
+    }
+
+    public ServiceTicket confirmCheckout(ServiceTicket serviceTicket){
+        ServiceTicket currentTicket = this.getServiceTicket(serviceTicket.getId());
+        currentTicket.setCheckout(true);
+        return this.serviceTicketRepository.save(currentTicket);
     }
 }

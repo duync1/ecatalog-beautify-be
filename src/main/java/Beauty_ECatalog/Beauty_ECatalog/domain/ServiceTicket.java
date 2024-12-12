@@ -31,6 +31,8 @@ public class ServiceTicket {
     private long id;
     private Instant date;
     private long total;
+    private boolean status;
+    private boolean checkout;
     @OneToMany(mappedBy = "serviceTicket", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ServiceTicketDetail> serviceTicketDetails;
