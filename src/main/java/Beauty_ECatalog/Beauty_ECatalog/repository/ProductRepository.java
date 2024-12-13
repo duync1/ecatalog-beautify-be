@@ -14,4 +14,5 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     List<Product> findByIdIn(List<Long> id);
     public List<Product> findByCategory(Category category);
     public boolean existsByName(String name);
+    public Product findByName(String name);
 }

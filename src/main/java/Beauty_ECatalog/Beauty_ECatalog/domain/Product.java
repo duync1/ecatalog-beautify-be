@@ -2,6 +2,8 @@ package Beauty_ECatalog.Beauty_ECatalog.domain;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +31,7 @@ public class Product {
     private String name;
     private int unitPrice;
     private String productImage;
+    private int quantity;
     @Column(columnDefinition = "MEDIUMTEXT")
     private String detailDescription;
     @Column(name = "is_deleted")
@@ -39,5 +42,10 @@ public class Product {
     private Category category;
 
     @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private List<SaleTicketDetail> saleTicketDetails;
+
+    @OneToMany(mappedBy = "product")
+    @JsonIgnore
+    private List<ImportTicketDetail> importTicketDetails;
 }

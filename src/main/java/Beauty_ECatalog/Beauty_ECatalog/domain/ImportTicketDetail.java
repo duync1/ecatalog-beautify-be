@@ -25,7 +25,9 @@ public class ImportTicketDetail {
     
     private int quantity;
 
-    private String productName;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
     
     @ManyToOne
     @JoinColumn(name = "import_ticket_id")

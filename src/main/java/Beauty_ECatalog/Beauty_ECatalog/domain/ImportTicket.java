@@ -31,7 +31,7 @@ public class ImportTicket {
     private long id;
     private Instant date;
     private long total;
-
+    private boolean status;
     @ManyToOne
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
