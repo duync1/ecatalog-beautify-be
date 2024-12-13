@@ -67,4 +67,8 @@ public class UserService {
     public User getUserByName(String name){
         return this.userRepository.findByName(name);
     }
+
+    public User handleCreateUserBase(User user){
+        return this.userRepository.save(user);
+    }
 }

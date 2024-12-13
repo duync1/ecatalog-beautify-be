@@ -1,7 +1,7 @@
 package Beauty_ECatalog.Beauty_ECatalog.controller;
 
 import java.time.Instant;
-
+import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -68,5 +68,14 @@ public class ServiceTicketController {
             throw new IdInvalidException("Service Ticket khong ton tai");
         }
         return ResponseEntity.ok().body(this.serviceTicketService.confirmCheckout(serviceTicket));
+    }
+
+    @PostMapping("/ServiceTickets/Admin")
+    public ResponseEntity<ServiceTicket> bookingServiceAdmin(@RequestParam("cusName") String cusName, @RequestParam("cusPhone") String cusPhone, @RequestParam("date") Instant date, @RequestParam("totalPrice") int totalPrice, @RequestParam("listServices") List<String> serviceName){
+        ServiceTicket serviceTicket = new ServiceTicket();
+        serviceTicket.setDate(date);
+        serviceTicket.setTotal(totalPrice);
+        ServiceTicket newServiceTicket = this.serviceTicketService.createServiceTicketAdmin(serviceTicket, cusName, cusPhone, serviceName);
+        return ResponseEntity.ok().body(newServiceTicket);
     }
 }

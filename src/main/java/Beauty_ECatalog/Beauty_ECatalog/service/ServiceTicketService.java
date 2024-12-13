@@ -92,4 +92,35 @@ public class ServiceTicketService {
         ResServiceTicketDetail resServiceTicketDetail = new ResServiceTicketDetail(serviceTicket, listServices);
         return resServiceTicketDetail;
     }
+
+    public ServiceTicket createServiceTicketAdmin(ServiceTicket serviceTicket, String cusName, String cusPhone, List<String> serviceName){
+        User user = this.userService.getUserByName(cusName);
+        User updateUser = new User();
+        if(user == null){
+            updateUser.setName(cusName);
+            updateUser.setPhoneNumber(cusPhone);
+            updateUser = this.userService.handleCreateUserBase(updateUser);
+        }
+        if(user != null){
+            if(user.getPhoneNumber() == null || !user.getPhoneNumber().equals(cusPhone)){
+                user.setPhoneNumber(cusPhone);
+                user = this.userService.handleUpdateUser(user);
+            }
+            serviceTicket.setUser(user);
+        }
+        else{
+            serviceTicket.setUser(updateUser);
+        }
+        serviceTicket.setCheckout(false);
+        serviceTicket.setStatus(false);
+        ServiceTicket saveServiceTicket = this.serviceTicketRepository.save(serviceTicket);
+        for(String serName : serviceName){
+            Servicee servicee = this.serviceService.findByName(serName);
+            ServiceTicketDetail serviceTicketDetail = new ServiceTicketDetail();
+            serviceTicketDetail.setService(servicee);
+            serviceTicketDetail.setServiceTicket(saveServiceTicket);
+            serviceTicketDetail = this.serviceTicketDetailService.createServiceTicketDetail(serviceTicketDetail);
+        }
+        return saveServiceTicket;
+    }
 }
