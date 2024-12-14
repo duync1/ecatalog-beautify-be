@@ -116,4 +116,7 @@ public class ProductService {
         return this.productRepository.findByName(name);
     }
     
+    public Product addQuanityFromImport(Product product){
+        return this.productRepository.save(product);
+    }
 }

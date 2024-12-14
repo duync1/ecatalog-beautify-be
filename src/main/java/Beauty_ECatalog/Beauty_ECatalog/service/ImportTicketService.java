@@ -76,6 +76,12 @@ public class ImportTicketService {
     public ImportTicket completeTicket(ImportTicket importTicket){
         ImportTicket currentImportTicket = this.getImportTicket(importTicket.getId());
         currentImportTicket.setStatus(true);
+        List<ImportTicketDetail> lists = this.importTicketDetailService.getDetailByImportTicket(currentImportTicket);
+        for(ImportTicketDetail ticket : lists){
+            Product product = ticket.getProduct();
+            product.setQuantity(product.getQuantity() + ticket.getQuantity());
+            product = this.productService.addQuanityFromImport(product);
+        }
         return this.importTicketRepository.save(currentImportTicket);
     }
 
