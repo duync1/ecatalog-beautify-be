@@ -54,4 +54,10 @@ public class CartService {
         }
         return null;
     }
+
+    public Cart getCartByUser(String email){
+        User user = this.userService.handleGetUserByUsername(email);
+        Cart cart = this.cartRepository.findByUser(user);
+        return cart;
+    }
 }

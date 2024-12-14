@@ -2,6 +2,7 @@ package Beauty_ECatalog.Beauty_ECatalog.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,5 +24,8 @@ public class CartController {
         return ResponseEntity.ok().body(cart);
     }
 
-    
+    @GetMapping("/Cart/GetCart")
+    public ResponseEntity<Cart> getCartByUserId(@RequestParam("email") String email){
+        return ResponseEntity.ok().body(this.cartService.getCartByUser(email));
+    }
 }

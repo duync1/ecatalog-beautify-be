@@ -1,5 +1,7 @@
 package Beauty_ECatalog.Beauty_ECatalog.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

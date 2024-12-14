@@ -2,6 +2,9 @@ package Beauty_ECatalog.Beauty_ECatalog.domain;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,6 +36,7 @@ public class Cart {
     private User user;
 
     @OneToMany(mappedBy = "cart")
+    @JsonIgnoreProperties(value = {"cart"})
     List<CartDetail> cartDetails;
     
 }
