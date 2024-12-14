@@ -3,8 +3,11 @@ package Beauty_ECatalog.Beauty_ECatalog.controller;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,5 +39,22 @@ public class SupplierController {
     @GetMapping("/Suppliers")
     public ResponseEntity<ResultPaginationDTO> getAllSuppliers(@Filter Specification<Supplier> spec, Pageable pageable){
         return ResponseEntity.ok().body(this.supplierService.fetchAllSuppliers(spec, pageable));
+    }
+
+    @PutMapping("/Supplier")
+    public ResponseEntity<Supplier> updateSupplier(@RequestBody Supplier supplier){
+        return ResponseEntity.ok().body(this.supplierService.handleUpdateSupplier(supplier));
+    }
+
+    @DeleteMapping("/Supplier/{id}")
+    public ResponseEntity<Void> deleteSupplier(@PathVariable("id") long id){
+        this.supplierService.handleDeleteSupplier(id);
+        return ResponseEntity.ok().body(null);
+    }
+
+    @GetMapping("/Supplier/Back/{id}")
+    public ResponseEntity<Void> restoreSupplier(@PathVariable("id") long id){
+        this.supplierService.handleRestoreSupplier(id);
+        return ResponseEntity.ok().body(null);
     }
 }

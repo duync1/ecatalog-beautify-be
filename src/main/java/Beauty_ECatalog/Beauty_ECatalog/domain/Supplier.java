@@ -24,4 +24,5 @@ public class Supplier {
     private String email;
     private String address;
     private String phone;
+    private boolean isDeleted;
 }

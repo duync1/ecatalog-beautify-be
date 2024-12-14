@@ -55,4 +55,28 @@ public class SupplierService {
         resultPaginationDTO.setResult(page.getContent());
         return resultPaginationDTO;
     }
+
+    public Supplier handleUpdateSupplier(Supplier supplier){
+        Supplier currentSupplier = this.findById(supplier.getId());
+        if(currentSupplier != null){
+            currentSupplier.setName(supplier.getName());
+            currentSupplier.setPhone(supplier.getPhone());
+            currentSupplier.setEmail(supplier.getEmail());
+            currentSupplier.setAddress(supplier.getAddress());
+            return this.supplierRepository.save(currentSupplier);
+        }
+        return null;
+    }
+
+    public void handleDeleteSupplier(long id){
+        Supplier supplier = this.findById(id);
+        supplier.setDeleted(true);
+        this.supplierRepository.save(supplier);
+    }
+
+    public void handleRestoreSupplier(long id){
+        Supplier supplier = this.findById(id);
+        supplier.setDeleted(false);
+        this.supplierRepository.save(supplier);
+    }
 }
