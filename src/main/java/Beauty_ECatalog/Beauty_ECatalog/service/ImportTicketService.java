@@ -1,5 +1,6 @@
 package Beauty_ECatalog.Beauty_ECatalog.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,8 +15,9 @@ import Beauty_ECatalog.Beauty_ECatalog.domain.Product;
 
 import Beauty_ECatalog.Beauty_ECatalog.domain.Supplier;
 import Beauty_ECatalog.Beauty_ECatalog.domain.request.ReqImportTicket;
-
+import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResImportTicketDetail;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResultPaginationDTO;
+import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResImportTicketDetail.ProductInTicket;
 import Beauty_ECatalog.Beauty_ECatalog.repository.ImportTicketRepository;
 
 @Service
@@ -75,5 +77,29 @@ public class ImportTicketService {
         ImportTicket currentImportTicket = this.getImportTicket(importTicket.getId());
         currentImportTicket.setStatus(true);
         return this.importTicketRepository.save(currentImportTicket);
+    }
+
+    public void handleDeleteImportTicket(long id){
+        ImportTicket importTicket = this.getImportTicket(id);
+        this.importTicketDetailService.deleteImportTicketDetail(importTicket.getImport_ticket_details());
+        this.importTicketRepository.delete(importTicket);
+    }
+
+    public ResImportTicketDetail getDetailOfImportTicket(long id){
+        ImportTicket importTicket = this.getImportTicket(id);
+        ResImportTicketDetail resImportTicketDetail = new ResImportTicketDetail();
+        String supplierName = importTicket.getSupplier().getName();
+        resImportTicketDetail.setSupplier(supplierName);
+        resImportTicketDetail.setDate(importTicket.getDate());
+        resImportTicketDetail.setTotal(importTicket.getTotal());
+        resImportTicketDetail.setStatus(importTicket.isStatus());
+        List<ProductInTicket> lists = new ArrayList<>();
+        List<ImportTicketDetail> listsDetails = this.importTicketDetailService.getDetailByImportTicket(importTicket);
+        for(ImportTicketDetail importTicketDetail : listsDetails){
+            ResImportTicketDetail.ProductInTicket product = new ProductInTicket(importTicketDetail.getProduct(), importTicketDetail.getQuantity());
+            lists.add(product);
+        }
+        resImportTicketDetail.setListProducts(lists);
+        return resImportTicketDetail;
     }
 }
