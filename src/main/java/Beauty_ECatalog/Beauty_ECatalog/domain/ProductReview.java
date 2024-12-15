@@ -1,7 +1,6 @@
 package Beauty_ECatalog.Beauty_ECatalog.domain;
 
 import java.time.Instant;
-import java.util.List;
 
 
 import jakarta.persistence.Column;
@@ -11,8 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +32,9 @@ public class ProductReview {
 
     @Column(columnDefinition = "MEDIUMTEXT")
     private String detailReview;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String response;
 
     private Instant date;
 
