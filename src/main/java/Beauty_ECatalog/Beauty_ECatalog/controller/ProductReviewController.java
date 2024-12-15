@@ -43,4 +43,8 @@ public class ProductReviewController {
         return ResponseEntity.ok().body(null);
     }
 
+    @PutMapping("/ProductReviews")
+    public ResponseEntity<ProductReview> updateProductReview(@RequestBody ProductReview productReview){
+        return ResponseEntity.ok().body(this.productReviewService.handleUpdateProductReview(productReview));
+    }
 }

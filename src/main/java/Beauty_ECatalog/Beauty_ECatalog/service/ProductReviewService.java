@@ -1,5 +1,7 @@
 package Beauty_ECatalog.Beauty_ECatalog.service;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -55,5 +57,21 @@ public class ProductReviewService {
 
     public void handleDeleteComment(long id){
         this.productReviewRepository.deleteById(id);
+    }
+
+    public ProductReview getProductReviewById(long id){
+        Optional<ProductReview> productReview = this.productReviewRepository.findById(id);
+        if(productReview.isPresent()){
+            return productReview.get();
+        }
+        return null;
+    }
+
+    public ProductReview handleUpdateProductReview(ProductReview productReview){
+        ProductReview dbProductReview = this.getProductReviewById(productReview.getId());
+        dbProductReview.setRating(productReview.getRating());
+        dbProductReview.setReviewSummary(productReview.getReviewSummary());
+        dbProductReview.setDetailReview(productReview.getDetailReview());
+        return this.productReviewRepository.save(dbProductReview);
     }
 }
