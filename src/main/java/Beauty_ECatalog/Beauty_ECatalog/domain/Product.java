@@ -48,4 +48,8 @@ public class Product {
     @OneToMany(mappedBy = "product")
     @JsonIgnore
     private List<ImportTicketDetail> importTicketDetails;
+
+    @OneToMany(mappedBy = "product")
+    @JsonIgnore
+    private List<ProductReview> productReviews;
 }
