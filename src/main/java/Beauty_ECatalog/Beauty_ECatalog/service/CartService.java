@@ -1,5 +1,7 @@
 package Beauty_ECatalog.Beauty_ECatalog.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import Beauty_ECatalog.Beauty_ECatalog.domain.Cart;
@@ -59,5 +61,19 @@ public class CartService {
         User user = this.userService.handleGetUserByUsername(email);
         Cart cart = this.cartRepository.findByUser(user);
         return cart;
+    }
+
+    public Cart deleteProduct(String email, List<Long> productId){
+        User user = this.userService.handleGetUserByUsername(email);
+        if(user != null){
+            Cart cart = this.cartRepository.findByUser(user);
+            for(long id: productId){
+                Product product = this.productService.getProductById(id);
+                CartDetail oldDetail = this.cartDetailRepository.findByCartAndProduct(cart, product);
+                this.cartDetailRepository.delete(oldDetail);
+            }
+            return cart;
+        }
+        return null;
     }
 }

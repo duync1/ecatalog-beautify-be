@@ -1,8 +1,10 @@
 package Beauty_ECatalog.Beauty_ECatalog.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,5 +29,11 @@ public class CartController {
     @GetMapping("/Cart/GetCart")
     public ResponseEntity<Cart> getCartByUserId(@RequestParam("email") String email){
         return ResponseEntity.ok().body(this.cartService.getCartByUser(email));
+    }
+
+    @PostMapping("/Cart/DeleteProductFromCart")
+    public ResponseEntity<Cart> handleDeleteProduct(@RequestParam("email") String email, @RequestParam("productId") List<Long> productId){
+        Cart cart = this.cartService.deleteProduct(email, productId);
+        return ResponseEntity.ok().body(cart);
     }
 }
