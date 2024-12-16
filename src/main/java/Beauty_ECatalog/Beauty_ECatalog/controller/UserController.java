@@ -1,5 +1,8 @@
 package Beauty_ECatalog.Beauty_ECatalog.controller;
 
+import java.io.IOException;
+import java.time.Instant;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -8,7 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import Beauty_ECatalog.Beauty_ECatalog.domain.User;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResCreateUserDTO;
@@ -48,11 +53,16 @@ public class UserController {
         }
         return ResponseEntity.ok().body(user);
     }
+
     @PutMapping("/users")
     public ResponseEntity<User> updateUser(@RequestBody User user){
         User currentUser = this.userService.handleUpdateUser(user);
         return ResponseEntity.ok().body(currentUser);
     }
 
+    @PutMapping("/Users/UpdateClient")
+    public ResponseEntity<User> updateUserClient(@RequestParam(value = "email") String email, @RequestParam(value = "name", required = false) String name, @RequestParam(value = "birthDay", required = false) Instant birthDay, @RequestParam(value = "phoneNumber", required = false) String phoneNumber, @RequestParam(value = "address", required = false) String address, @RequestParam(value = "userImage", required = false) MultipartFile userImage) throws IOException{
+        return ResponseEntity.ok().body(this.userService.handleUpdateUserClient(email, name, birthDay, phoneNumber, address, userImage));
+    }
     
 }

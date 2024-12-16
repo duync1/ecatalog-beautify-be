@@ -1,8 +1,14 @@
 package Beauty_ECatalog.Beauty_ECatalog.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import Beauty_ECatalog.Beauty_ECatalog.domain.User;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResCreateUserDTO;
@@ -11,6 +17,7 @@ import Beauty_ECatalog.Beauty_ECatalog.repository.UserRepository;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final String uploadDir = "src/main/resources/static/uploads/";
     public UserService(UserRepository userRepository){
         this.userRepository = userRepository;
     }
@@ -70,5 +77,42 @@ public class UserService {
 
     public User handleCreateUserBase(User user){
         return this.userRepository.save(user);
+    }
+
+    public User handleUpdateUserClient(String email, String name, Instant birthDay, String phoneNumber, String address, MultipartFile multipartFile) throws IOException{
+        User dbUser = this.handleGetUserByUsername(email);
+        if(name != null){
+            dbUser.setName(name);
+        }
+        if(phoneNumber != null){
+            dbUser.setPhoneNumber(phoneNumber);
+        }
+        if(birthDay != null){
+            dbUser.setBirthDay(birthDay);
+        }
+        if(address != null){
+            dbUser.setAddress(address);
+        }
+        if (multipartFile != null && !multipartFile.isEmpty()) {
+            String imagePath = saveImage(multipartFile);
+            dbUser.setUserImage(imagePath);
+        }
+        return this.userRepository.save(dbUser);
+    }
+
+    private String saveImage(MultipartFile imageFile) throws IOException {
+        if (imageFile == null || imageFile.isEmpty()) {
+            return null; // Hoặc trả về giá trị mặc định nếu không có ảnh mới
+        }
+        Path path = Paths.get(uploadDir);
+        if (!Files.exists(path)) {
+            Files.createDirectories(path);
+        }
+    
+        String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+        Path filePath = path.resolve(fileName);
+        Files.write(filePath, imageFile.getBytes());
+    
+        return "/uploads/" + fileName;
     }
 }
