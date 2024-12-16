@@ -28,6 +28,7 @@ public class StoreReviewService {
         User user = this.userService.handleGetUserByUsername(reqStoreReview.getEmail());
         StoreReview storeReview = new StoreReview();
         storeReview.setComment(reqStoreReview.getComment());
+        storeReview.setDate(reqStoreReview.getDate());
         storeReview.setDeliveryQuality(reqStoreReview.getDeliveryQuality());
         storeReview.setProductQuality(reqStoreReview.getProductQuality());
         storeReview.setServiceQuality(reqStoreReview.getServiceQuality());

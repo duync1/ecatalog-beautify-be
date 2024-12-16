@@ -1,5 +1,7 @@
 package Beauty_ECatalog.Beauty_ECatalog.domain;
 
+import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,6 +40,8 @@ public class StoreReview {
     private String response;
 
     private boolean status;
+
+    private Instant date;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

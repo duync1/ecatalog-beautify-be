@@ -1,5 +1,7 @@
 package Beauty_ECatalog.Beauty_ECatalog.domain.request;
 
+import java.time.Instant;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,7 @@ public class ReqStoreReview {
     private double productQuality;
     private double serviceQuality;
     private double deliveryQuality;
+    private Instant date;
     private String title;
     private String comment;
 }

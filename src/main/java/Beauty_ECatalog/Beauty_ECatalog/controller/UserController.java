@@ -53,4 +53,6 @@ public class UserController {
         User currentUser = this.userService.handleUpdateUser(user);
         return ResponseEntity.ok().body(currentUser);
     }
+
+    
 }
