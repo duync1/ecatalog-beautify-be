@@ -74,7 +74,7 @@ public class StoreReviewService {
 
     public StoreReview responseComment(long id, String response){
         StoreReview storeReview = this.getCommentById(id);
-        storeReview.setComment(response);
+        storeReview.setResponse(response);
         storeReview.setStatus(true);
         return this.storeReviewRepository.save(storeReview);
     }
