@@ -12,7 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import Beauty_ECatalog.Beauty_ECatalog.domain.Product;
+
 import Beauty_ECatalog.Beauty_ECatalog.domain.Servicee;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResultPaginationDTO;
 import Beauty_ECatalog.Beauty_ECatalog.repository.ServiceRepository;

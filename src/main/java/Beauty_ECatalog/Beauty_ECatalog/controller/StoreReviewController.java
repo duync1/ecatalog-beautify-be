@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.turkraft.springfilter.boot.Filter;
@@ -45,5 +46,10 @@ public class StoreReviewController {
     @PutMapping("/StoreReviews")
     public ResponseEntity<StoreReview> updateComment(@RequestBody StoreReview storeReview){
         return ResponseEntity.ok().body(this.storeReviewService.handleUpdateComment(storeReview));
+    }
+
+    @PutMapping("/StoreReviews/Response")
+    public ResponseEntity<StoreReview> responseComment(@RequestParam("id") long id, @RequestParam("response") String response){
+        return ResponseEntity.ok().body(this.storeReviewService.responseComment(id, response));
     }
 }

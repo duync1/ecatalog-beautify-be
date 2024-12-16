@@ -70,4 +70,11 @@ public class StoreReviewService {
         dbStoreReview.setTitle(storeReview.getTitle());
         return this.storeReviewRepository.save(dbStoreReview);
     }
+
+    public StoreReview responseComment(long id, String response){
+        StoreReview storeReview = this.getCommentById(id);
+        storeReview.setComment(response);
+        storeReview.setStatus(true);
+        return this.storeReviewRepository.save(storeReview);
+    }
 }
