@@ -54,7 +54,7 @@ public class AuthController {
         ResLoginDTO res = new ResLoginDTO();
         User user = this.userService.handleGetUserByUsername(loginDTO.getUsername());
         if (user != null) {
-            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(user.getId(), user.getEmail(), user.getName(), user.getPhoneNumber(),
+            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(user.getId(), user.getEmail(), user.getName(), user.getPhoneNumber(), user.getAddress(), user.getBirthDay(), user.getUserImage(),
                     user.getRole());
             res.setUser(userLogin);
         }
@@ -102,7 +102,7 @@ public class AuthController {
         ResLoginDTO res = new ResLoginDTO();
         User user = this.userService.handleGetUserByUsername(email);
         if (user != null) {
-            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(user.getId(), user.getEmail(), user.getName(), user.getPhoneNumber(),
+            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(user.getId(), user.getEmail(), user.getName(), user.getPhoneNumber(), user.getAddress(), user.getBirthDay(), user.getUserImage(),
                     user.getRole());
             res.setUser(userLogin);
         }

@@ -1,5 +1,7 @@
 package Beauty_ECatalog.Beauty_ECatalog.domain.response;
 
+import java.time.Instant;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import Beauty_ECatalog.Beauty_ECatalog.domain.Role;
@@ -24,6 +26,9 @@ public class ResLoginDTO {
         private String email;
         private String name;
         private String phoneNumber;
+        private String address;
+        private Instant birthDay;
+        private String userImage;
         private Role role;
     }
 
