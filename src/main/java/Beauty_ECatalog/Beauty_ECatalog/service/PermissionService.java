@@ -64,10 +64,33 @@ public class PermissionService {
         return resultPaginationDTO;
     }
 
+    public Permission fetchById(long id) {
+        Optional<Permission> permissionOptional = this.permissionRepository.findById(id);
+        if (permissionOptional.isPresent())
+            return permissionOptional.get();
+        return null;
+    }
+
     public void delete(long id) {
         Optional<Permission> permissionOptional = this.permissionRepository.findById(id);
         Permission currentPermission = permissionOptional.get();
-        currentPermission.getRoles().forEach(role -> role.getPermissions().remove(currentPermission));
-        this.permissionRepository.delete(currentPermission);
+        currentPermission.setDeleted(true);
+        this.permissionRepository.save(currentPermission);
+    }
+
+    public boolean isSameName(Permission p) {
+        Permission permissionDB = this.fetchById(p.getId());
+        if (permissionDB != null) {
+            if (permissionDB.getName().equals(p.getName()))
+                return true;
+        }
+        return false;
+    }
+
+    public void restore(long id){
+        Optional<Permission> permissionOptional = this.permissionRepository.findById(id);
+        Permission currentPermission = permissionOptional.get();
+        currentPermission.setDeleted(false);
+        this.permissionRepository.save(currentPermission);
     }
 }

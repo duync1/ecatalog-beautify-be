@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -41,6 +42,9 @@ public class Permission {
     @NotBlank(message = "module không được để trống")
     private String module;
 
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+    
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;

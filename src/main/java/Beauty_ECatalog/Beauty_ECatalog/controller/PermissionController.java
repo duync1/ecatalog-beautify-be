@@ -47,11 +47,14 @@ public class PermissionController {
         boolean existPermission = this.permissionService.isPermissionExist(permission);
         if (!isExist) {
             throw new IdInvalidException("Permission voi id = " + permission.getId() + " khong ton tai");
-        } else if (existPermission) {
-            throw new IdInvalidException("Permission da ton tai");
-        } else {
-            return ResponseEntity.ok().body(this.permissionService.handleUpdatePermission(permission));
-        }
+        }  
+        if (existPermission) {
+            if (this.permissionService.isSameName(permission)) {
+                throw new IdInvalidException("Permission đã tồn tại.");
+            }
+        } 
+        return ResponseEntity.ok().body(this.permissionService.handleUpdatePermission(permission));
+        
     }
 
     @GetMapping("/permissions")
@@ -66,6 +69,17 @@ public class PermissionController {
         boolean isExist = this.permissionService.existsById(id);
         if (isExist) {
             this.permissionService.delete(id);
+            return ResponseEntity.ok().body(null);
+        } else {
+            throw new IdInvalidException("Permission voi id = " + id + " khong ton tai");
+        }
+    }
+
+    @GetMapping("/permissions/restore/{id}")
+    public ResponseEntity<Void> restorePermission(@PathVariable("id") long id) throws IdInvalidException {
+        boolean isExist = this.permissionService.existsById(id);
+        if (isExist) {
+            this.permissionService.restore(id);
             return ResponseEntity.ok().body(null);
         } else {
             throw new IdInvalidException("Permission voi id = " + id + " khong ton tai");
