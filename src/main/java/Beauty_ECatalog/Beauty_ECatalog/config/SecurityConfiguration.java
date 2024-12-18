@@ -6,7 +6,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -43,7 +43,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
             CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
-        String[] whiteList = { "/User/Login", "/auth/refresh", "/User/Register", "/Product/**", "/uploads/**", "/Service/**", "/Category/**", "/services/**"
+        String[] whiteList = {  "/", "/User/Login", "/User/Register", "/auth/logout", "/Category/**", "/Product/**", "/services/{id}", "/Service/**", "/uploads/**", "/ProductReviews", "/StoreReviews"
         };
         http
                 .csrf(c -> c.disable())

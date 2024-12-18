@@ -71,7 +71,6 @@ public class RoleController {
     }
 
     @GetMapping("/roles/{id}")
-    
     public ResponseEntity<Role> getById(@PathVariable("id") long id) throws IdInvalidException {
         Role role = this.roleService.fetchById(id);
         if (role == null) {
@@ -80,5 +79,4 @@ public class RoleController {
             return ResponseEntity.ok().body(role);
         }
     }
-
 }
