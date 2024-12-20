@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,6 +40,7 @@ public class SaleTicket {
     
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties(value = {"role"})
     private User user;
     @OneToMany(mappedBy = "saleTicket", fetch = FetchType.LAZY)
     @JsonIgnore
