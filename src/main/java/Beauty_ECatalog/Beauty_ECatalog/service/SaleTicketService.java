@@ -1,5 +1,6 @@
 package Beauty_ECatalog.Beauty_ECatalog.service;
 
+import java.io.ObjectInputFilter.Status;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 import Beauty_ECatalog.Beauty_ECatalog.domain.Product;
 import Beauty_ECatalog.Beauty_ECatalog.domain.SaleTicket;
 import Beauty_ECatalog.Beauty_ECatalog.domain.SaleTicketDetail;
-import Beauty_ECatalog.Beauty_ECatalog.domain.ServiceTicket;
+
 import Beauty_ECatalog.Beauty_ECatalog.domain.User;
 import Beauty_ECatalog.Beauty_ECatalog.domain.Voucher;
 import Beauty_ECatalog.Beauty_ECatalog.domain.request.ReqProduct;
@@ -24,6 +25,7 @@ import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResultPaginationDTO;
 import Beauty_ECatalog.Beauty_ECatalog.repository.ProductRepository;
 import Beauty_ECatalog.Beauty_ECatalog.repository.SaleTicketDetailRepository;
 import Beauty_ECatalog.Beauty_ECatalog.repository.SaleTicketRepository;
+import Beauty_ECatalog.Beauty_ECatalog.util.constant.StatusEnum;
 
 
 @Service
@@ -46,13 +48,13 @@ public class SaleTicketService {
     public SaleTicket createSaleTicket(ReqSaleTicket reqSaleTicket){
         User user = this.userService.handleGetUserByUsername(reqSaleTicket.getEmail());
         Voucher voucher = this.voucherService.getDiscountById(reqSaleTicket.getDiscountId());
+        
         SaleTicket saleTicket = new SaleTicket();
         saleTicket.setUser(user);
         saleTicket.setDiscount(voucher);
         saleTicket.setDate(reqSaleTicket.getDate());
         saleTicket.setTotal(reqSaleTicket.getTotal());
-        saleTicket.setConfirm(false);
-        saleTicket.setStatus(false);
+        saleTicket.setStatus(StatusEnum.PREPARING);
         saleTicket = this.saleTicketRepository.save(saleTicket);
         for(ReqProduct product : reqSaleTicket.getListProducts()){
             SaleTicketDetail saleTicketDetail = new SaleTicketDetail();
@@ -83,7 +85,6 @@ public class SaleTicketService {
         SaleTicket saleTicket = this.getSaleTicketById(id);
         if(saleTicket != null){
             ResSaleTicketDetail resSaleTicketDetail = new ResSaleTicketDetail();
-            resSaleTicketDetail.setSaleTicket(saleTicket);
             List<SaleTicketDetail> lists = this.saleTicketDetailRepository.findBySaleTicket(saleTicket);
             List<ProductInTicket> listProduct = new ArrayList<>();
             for(SaleTicketDetail saleTicketDetail : lists){
@@ -98,7 +99,7 @@ public class SaleTicketService {
 
     public SaleTicket confirmComplete(long id){
         SaleTicket saleTicket = this.getSaleTicketById(id);
-        saleTicket.setConfirm(true);
+        saleTicket.setStatus(StatusEnum.COMPLETED);
         List<SaleTicketDetail> lSaleTicketDetails = this.saleTicketDetailRepository.findBySaleTicket(saleTicket);
         for(SaleTicketDetail saleTicketDetail : lSaleTicketDetails){
             Product product = this.productService.getProductById(saleTicketDetail.getProduct().getId());
@@ -110,7 +111,7 @@ public class SaleTicketService {
 
     public SaleTicket confirmDelivery(long id){
         SaleTicket saleTicket = this.getSaleTicketById(id);
-        saleTicket.setStatus(true);
+        saleTicket.setStatus(StatusEnum.DELIVERING);
         return this.saleTicketRepository.save(saleTicket);
     }
 

@@ -51,6 +51,7 @@ public class SaleTicketController {
         return ResponseEntity.ok().body(this.saleTicketService.confirmComplete(id));
     }
 
+
     @PostMapping("/SaleTickets/ConfirmDelivery")
     public ResponseEntity<SaleTicket> confirmDelivery(@RequestParam("id") long id){
         return ResponseEntity.ok().body(this.saleTicketService.confirmDelivery(id));

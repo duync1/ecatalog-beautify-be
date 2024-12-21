@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResSaleTicketDetail {
-    private SaleTicket saleTicket;
+    
     private List<ProductInTicket> listProducts;
 
     @Getter

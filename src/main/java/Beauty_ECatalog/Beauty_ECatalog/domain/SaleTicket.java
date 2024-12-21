@@ -6,8 +6,11 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.Column;
+import Beauty_ECatalog.Beauty_ECatalog.util.constant.StatusEnum;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,7 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,9 +37,9 @@ public class SaleTicket {
     private long id;
     private Instant date;
     private long total;
-    private boolean status;
-    @Column(name = "is_Confirm")
-    private boolean isConfirm;
+    
+    @Enumerated(EnumType.STRING)
+    private StatusEnum status;
     
     @ManyToOne
     @JoinColumn(name = "user_id")
