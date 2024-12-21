@@ -36,7 +36,7 @@ public class SaleTicket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private Instant date;
-    private long total;
+    private double total;
     
     @Enumerated(EnumType.STRING)
     private StatusEnum status;

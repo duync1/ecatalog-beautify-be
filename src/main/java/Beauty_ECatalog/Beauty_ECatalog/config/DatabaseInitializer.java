@@ -112,6 +112,21 @@ public class DatabaseInitializer implements CommandLineRunner{
             arr.add(new Permission("Get user by id", "/users/{id}", "GET", "USER"));
             arr.add(new Permission("Update user", "/users", "PUT", "USER"));
             arr.add(new Permission("Update user (client)", "/Users/UpdateClient", "PUT", "USER"));
+
+            arr.add(new Permission("Get voucher by id", "/Voucher/{id}", "GET", "VOUCHER"));
+            arr.add(new Permission("Create a voucher", "/Voucher", "POST", "VOUCHER"));
+            arr.add(new Permission("Update voucher", "/Voucher", "PUT", "VOUCHER"));
+            arr.add(new Permission("Delete a voucher", "/Voucher/{id}", "DELETE", "VOUCHER"));
+            arr.add(new Permission("Restore a voucher", "/Voucher/Back/{id}", "GET", "VOUCHER"));
+            arr.add(new Permission("Get all vouchers", "/Voucher", "GET", "VOUCHER"));
+
+            arr.add(new Permission("Create order ticket client", "/SaleTickets/Client", "POST", "ORDER_TICKET"));
+            arr.add(new Permission("Get all order ticket client", "/SaleTickets/Client/GetAllSaleTickets", "GET", "ORDER_TICKET"));
+            arr.add(new Permission("Get detail order ticket client", "/SaleTickets/Clients/GetDetail/{id}", "GET", "ORDER_TICKET"));
+            arr.add(new Permission("Confirm complete order ticket", "/SaleTickets/ConfirmComplete", "POST", "ORDER_TICKET"));
+            arr.add(new Permission("Confirm delivery order ticket", "/SaleTickets/ConfirmDelivery", "POST", "ORDER_TICKET"));
+            arr.add(new Permission("Get all order tickets", "/SaleTickets", "GET", "ORDER_TICKET"));
+            arr.add(new Permission("Delete order ticket", "/SaleTickets/{id}", "DELETE", "ORDER_TICKET"));
             this.permissionRepository.saveAll(arr);
         }
 
