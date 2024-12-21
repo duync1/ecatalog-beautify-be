@@ -15,7 +15,7 @@ import Beauty_ECatalog.Beauty_ECatalog.repository.RoleRepository;
 import Beauty_ECatalog.Beauty_ECatalog.repository.UserRepository;
 
 @Service
-public class DatabaseInitializer implements CommandLineRunner{
+public class DatabaseInitializer implements CommandLineRunner {
     private final PermissionRepository permissionRepository;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
@@ -31,6 +31,7 @@ public class DatabaseInitializer implements CommandLineRunner{
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
     @Override
     public void run(String... args) throws Exception {
         System.out.println(">>> START INIT DATABASE");
@@ -38,7 +39,7 @@ public class DatabaseInitializer implements CommandLineRunner{
         long countRoles = this.roleRepository.count();
         long countUsers = this.userRepository.count();
 
-        if(countPermissions == 0){
+        if (countPermissions == 0) {
             ArrayList<Permission> arr = new ArrayList<>();
             arr.add(new Permission("Create a product", "/Product", "POST", "PRODUCT"));
             arr.add(new Permission("Update a product", "/Product", "PUT", "PRODUCT"));
@@ -70,7 +71,8 @@ public class DatabaseInitializer implements CommandLineRunner{
             arr.add(new Permission("Delete permissions by id", "/permissions/{id}", "DELETE", "PERMISSION"));
             arr.add(new Permission("Restore permissions by id", "/permissions/restore/{id}", "GET", "PERMISSION"));
 
-            arr.add(new Permission("Create a product comment", "/ProductReview/CreateComment", "POST", "PRODUCT_REVIEW"));
+            arr.add(new Permission("Create a product comment", "/ProductReview/CreateComment", "POST",
+                    "PRODUCT_REVIEW"));
             arr.add(new Permission("Get all product comment", "/ProductReviews", "GET", "PRODUCT_REVIEW"));
             arr.add(new Permission("Delete product comment by id", "/ProductReviews/{id}", "DELETE", "PRODUCT_REVIEW"));
             arr.add(new Permission("Update product comment", "/ProductReviews", "PUT", "PRODUCT_REVIEW"));
@@ -79,7 +81,6 @@ public class DatabaseInitializer implements CommandLineRunner{
             arr.add(new Permission("Update a role", "/roles", "PUT", "ROLE"));
             arr.add(new Permission("Get all roles", "/roles", "GET", "ROLE"));
             arr.add(new Permission("Delete role by id", "/roles/{id}", "DELETE", "ROLE"));
-            arr.add(new Permission("Get role by id", "/roles/{id}", "GET", "ROLE"));
 
             arr.add(new Permission("Get service by id", "/services/{id}", "GET", "SERVICE"));
             arr.add(new Permission("Create a service", "/Service", "POST", "SERVICE"));
@@ -91,7 +92,8 @@ public class DatabaseInitializer implements CommandLineRunner{
             arr.add(new Permission("Get all service tickets", "/ServiceTickets", "GET", "SERVICE_TICKET"));
             arr.add(new Permission("Booking service (client)", "/ServiceTickets/Client", "POST", "SERVICE_TICKET"));
             arr.add(new Permission("Get service ticket by id", "/ServiceTickets/Detail/{id}", "GET", "SERVICE_TICKET"));
-            arr.add(new Permission("Confirm service ticket", "/ServiceTickets/confirmServiceTicket", "POST", "SERVICE_TICKET"));
+            arr.add(new Permission("Confirm service ticket", "/ServiceTickets/confirmServiceTicket", "POST",
+                    "SERVICE_TICKET"));
             arr.add(new Permission("Confirm checkout", "/ServiceTickets/confirmCheckout", "POST", "SERVICE_TICKET"));
             arr.add(new Permission("Booking service (admin)", "/ServiceTickets/Admin", "POST", "SERVICE_TICKET"));
 
@@ -115,7 +117,7 @@ public class DatabaseInitializer implements CommandLineRunner{
             this.permissionRepository.saveAll(arr);
         }
 
-        if(countRoles == 0){
+        if (countRoles == 0) {
             List<Permission> allPermissions = this.permissionRepository.findAll();
 
             Role adminRole = new Role();
