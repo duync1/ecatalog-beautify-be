@@ -149,7 +149,7 @@ public class AuthController {
         ResCreateUserDTO resCreateUserDTO = this.userService.convertToResCreateUserDTO(ericUser);
         if (ericUser == null) {
             throw new IdInvalidException(
-                    "Email " + postManUser.getEmail() + "đã tồn tại, vui lòng sử dụng email khác.");
+                    "Email " + postManUser.getEmail() + " đã tồn tại, vui lòng sử dụng email khác.");
         } else {
             return ResponseEntity.ok().body(resCreateUserDTO);
         }

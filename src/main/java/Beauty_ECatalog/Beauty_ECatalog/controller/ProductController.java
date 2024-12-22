@@ -1,8 +1,6 @@
 package Beauty_ECatalog.Beauty_ECatalog.controller;
 
-
 import java.io.IOException;
-
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
