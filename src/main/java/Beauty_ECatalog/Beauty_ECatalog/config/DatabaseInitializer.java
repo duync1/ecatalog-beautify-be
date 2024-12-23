@@ -80,6 +80,7 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Create a role", "/roles", "POST", "ROLE"));
             arr.add(new Permission("Update a role", "/roles", "PUT", "ROLE"));
             arr.add(new Permission("Get all roles", "/roles", "GET", "ROLE"));
+            arr.add(new Permission("Get role by id", "/roles/{id}", "GET", "ROLE"));
             arr.add(new Permission("Delete role by id", "/roles/{id}", "DELETE", "ROLE"));
 
             arr.add(new Permission("Get service by id", "/services/{id}", "GET", "SERVICE"));
@@ -142,6 +143,12 @@ public class DatabaseInitializer implements CommandLineRunner {
             adminRole.setPermissions(allPermissions);
 
             this.roleRepository.save(adminRole);
+
+            // Role customerRole = new Role();
+            // customerRole.setName("CUSTOMER");
+            // customerRole.setDescription("Customer role");
+            // customerRole.setActive(true);
+            // customerRole.setPermissions(allPermissions);
         }
 
         if (countUsers == 0) {

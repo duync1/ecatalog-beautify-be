@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import Beauty_ECatalog.Beauty_ECatalog.domain.Role;
 import Beauty_ECatalog.Beauty_ECatalog.domain.User;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResCreateUserDTO;
 import Beauty_ECatalog.Beauty_ECatalog.repository.UserRepository;
@@ -17,13 +18,17 @@ import Beauty_ECatalog.Beauty_ECatalog.repository.UserRepository;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final RoleService roleService;
     private final String uploadDir = "src/main/resources/static/uploads/";
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository, RoleService roleService){
         this.userRepository = userRepository;
+        this.roleService = roleService;
     }
 
     public User handleCreateUser(User user){
         if(this.userRepository.existsByEmail(user.getEmail()) == false){
+            Role role = this.roleService.getRoleByName("CUSTOMER");
+            user.setRole(role);
             this.userRepository.save(user);
             return user;
         }
