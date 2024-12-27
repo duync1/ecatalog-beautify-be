@@ -25,24 +25,27 @@ import Beauty_ECatalog.Beauty_ECatalog.util.error.IdInvalidException;
 public class ProductController {
     private final ProductService productService;
 
-    public ProductController(ProductService productService){
+    public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
     @GetMapping("/Product/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable("id") long id) throws IdInvalidException{
+    public ResponseEntity<Product> getProduct(@PathVariable("id") long id) throws IdInvalidException {
         Product product = this.productService.getProductById(id);
-        if(product == null){
+        if (product == null) {
             throw new IdInvalidException("Product not found");
         }
         return ResponseEntity.ok().body(product);
     }
 
     @PostMapping("/Product")
-    public ResponseEntity<Product> createProduct(@RequestParam("name") String name, @RequestParam("unitPrice") double price, 
-        @RequestParam("image") MultipartFile image, @RequestParam("subImage1") MultipartFile subImage1, @RequestParam("subImage2") MultipartFile subImage2, @RequestParam("subImage3") MultipartFile subImage3, @RequestParam("brand") String brand, @RequestParam("category") String categoryName, @RequestParam("detailDescription") String description
-    ) throws IOException, IdInvalidException{
-        if(this.productService.findProductByName(name)){
+    public ResponseEntity<Product> createProduct(@RequestParam("name") String name,
+            @RequestParam("unitPrice") double price,
+            @RequestParam("image") MultipartFile image, @RequestParam("subImage1") MultipartFile subImage1,
+            @RequestParam("subImage2") MultipartFile subImage2, @RequestParam("subImage3") MultipartFile subImage3,
+            @RequestParam("brand") String brand, @RequestParam("category") String categoryName,
+            @RequestParam("detailDescription") String description) throws IOException, IdInvalidException {
+        if (this.productService.findProductByName(name)) {
             throw new IdInvalidException("Ten san pham da ton tai");
         }
         Product product = new Product();
@@ -51,32 +54,39 @@ public class ProductController {
         product.setBrand(brand);
         product.setDetailDescription(description);
         product.setDeleted(false);
-        return ResponseEntity.ok().body(this.productService.createProduct(product, image, subImage1, subImage2, subImage3, categoryName));
+        return ResponseEntity.ok()
+                .body(this.productService.createProduct(product, image, subImage1, subImage2, subImage3, categoryName));
     }
 
     @GetMapping("/Product")
-    public ResponseEntity<ResultPaginationDTO> getAllProduct(@Filter Specification<Product> spec, Pageable pageable){
+    public ResponseEntity<ResultPaginationDTO> getAllProduct(@Filter Specification<Product> spec, Pageable pageable) {
         return ResponseEntity.ok().body(this.productService.fetchAllProducts(spec, pageable));
     }
 
     @DeleteMapping("/Product/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable("id") long id){
+    public ResponseEntity<Void> deleteProduct(@PathVariable("id") long id) {
         this.productService.deleteProduct(id);
         return ResponseEntity.ok().body(null);
     }
 
     @GetMapping("/Product/Back/{id}")
-    public ResponseEntity<Void> backProduct(@PathVariable("id") long id){
+    public ResponseEntity<Void> backProduct(@PathVariable("id") long id) {
         this.productService.backProduct(id);
         return ResponseEntity.ok().body(null);
     }
-    
+
     @PutMapping("/Product")
-    public ResponseEntity<Product> updateProduct(@RequestParam("id") long id, @RequestParam("name") String name, @RequestParam("unitPrice") int price, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam("subImage1") MultipartFile subImage1, @RequestParam("subImage2") MultipartFile subImage2, @RequestParam("subImage3") MultipartFile subImage3, @RequestParam("brand") String brand, @RequestParam("category") String categoryName, @RequestParam("detailDescription") String description) throws IdInvalidException, IOException{
+    public ResponseEntity<Product> updateProduct(@RequestParam("id") long id, @RequestParam("name") String name,
+            @RequestParam("unitPrice") int price, @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "subImage1", required = false) MultipartFile subImage1,
+            @RequestParam(value = "subImage2", required = false) MultipartFile subImage2,
+            @RequestParam(value = "subImage3", required = false) MultipartFile subImage3,
+            @RequestParam("brand") String brand, @RequestParam("category") String categoryName,
+            @RequestParam("detailDescription") String description) throws IdInvalidException, IOException {
         Product temp = this.productService.getProductById(id);
-        if(!temp.getName().equals(name)){
+        if (!temp.getName().equals(name)) {
             boolean check = this.productService.findProductByName(name);
-            if(check){
+            if (check) {
                 throw new IdInvalidException("Ten san pham da ton tai");
             }
         }
@@ -86,11 +96,12 @@ public class ProductController {
         product.setUnitPrice(price);
         product.setBrand(brand);
         product.setDetailDescription(description);
-        Product updateProduct = this.productService.updateProduct(product, image, subImage1, subImage2, subImage3, categoryName);
-        if(updateProduct == null){
+        Product updateProduct = this.productService.updateProduct(product, image, subImage1, subImage2, subImage3,
+                categoryName);
+        if (updateProduct == null) {
             throw new IdInvalidException("San pham khong ton tai");
         }
         return ResponseEntity.ok().body(updateProduct);
     }
-    
+
 }
