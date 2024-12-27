@@ -7,12 +7,17 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import Beauty_ECatalog.Beauty_ECatalog.domain.Role;
+import Beauty_ECatalog.Beauty_ECatalog.domain.Supplier;
 import Beauty_ECatalog.Beauty_ECatalog.domain.User;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResCreateUserDTO;
+import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResultPaginationDTO;
 import Beauty_ECatalog.Beauty_ECatalog.repository.UserRepository;
 
 @Service
@@ -119,5 +124,18 @@ public class UserService {
         Files.write(filePath, imageFile.getBytes());
     
         return "/uploads/" + fileName;
+    }
+
+    public ResultPaginationDTO fetchAllUsers(Specification<User> spec, Pageable pageable) {
+        Page<User> page = this.userRepository.findAll(spec, pageable);
+        ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
+        meta.setPage(page.getNumber() + 1);
+        meta.setPageSize(page.getSize());
+        meta.setPages(page.getTotalPages());
+        meta.setTotal(page.getTotalElements());
+        resultPaginationDTO.setMeta(meta);
+        resultPaginationDTO.setResult(page.getContent());
+        return resultPaginationDTO;
     }
 }

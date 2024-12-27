@@ -3,6 +3,8 @@ package Beauty_ECatalog.Beauty_ECatalog.controller;
 import java.io.IOException;
 import java.time.Instant;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,9 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.turkraft.springfilter.boot.Filter;
+
 import Beauty_ECatalog.Beauty_ECatalog.domain.User;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResCreateUserDTO;
+import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResultPaginationDTO;
 import Beauty_ECatalog.Beauty_ECatalog.service.UserService;
+import Beauty_ECatalog.Beauty_ECatalog.util.error.IdInvalidException;
 
 @RestController
 public class UserController {
@@ -27,7 +33,8 @@ public class UserController {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
-    @PostMapping("/users")
+
+    @PostMapping("/Users")
     public ResponseEntity<ResCreateUserDTO> createNewUser(@RequestBody User postUser){
         String hashPassword = this.passwordEncoder.encode(postUser.getPassword());
         postUser.setPassword(hashPassword);
@@ -35,26 +42,27 @@ public class UserController {
         ResCreateUserDTO resCreateUserDTO = this.userService.convertToResCreateUserDTO(newUser);
         return ResponseEntity.ok().body(resCreateUserDTO);
     }
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id){
+
+    @DeleteMapping("/Users/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) throws IdInvalidException{
         User user = this.userService.fetchUserById(id);
         if(user == null){
-
+            throw new IdInvalidException("User not found");
         }
         this.userService.handleDeleteUser(user);
         return ResponseEntity.ok().body(null);
     }
 
-    @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUser(@PathVariable("id") long id){
+    @GetMapping("/Users/{id}")
+    public ResponseEntity<User> getUser(@PathVariable("id") long id) throws IdInvalidException{
         User user = this.userService.fetchUserById(id);
         if(user == null){
-
+            throw new IdInvalidException("User not found");
         }
         return ResponseEntity.ok().body(user);
     }
 
-    @PutMapping("/users")
+    @PutMapping("/Users")
     public ResponseEntity<User> updateUser(@RequestBody User user){
         User currentUser = this.userService.handleUpdateUser(user);
         return ResponseEntity.ok().body(currentUser);
@@ -65,4 +73,8 @@ public class UserController {
         return ResponseEntity.ok().body(this.userService.handleUpdateUserClient(email, name, birthDay, phoneNumber, address, userImage));
     }
     
+    @GetMapping("/Users")
+    public ResponseEntity<ResultPaginationDTO> getAllUsers (@Filter Specification<User> spec, Pageable pageable){
+        return ResponseEntity.ok().body(this.userService.fetchAllUsers(spec, pageable));
+    }
 }

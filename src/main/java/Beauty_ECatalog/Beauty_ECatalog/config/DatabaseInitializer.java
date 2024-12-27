@@ -111,11 +111,12 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Get supplier by id", "/Supplier/{id}", "GET", "SUPPLIER"));
             arr.add(new Permission("Restore supplier by id", "/Supplier/Back/{id}", "GET", "SUPPLIER"));
 
-            arr.add(new Permission("Create a user", "/users", "POST", "USER"));
-            arr.add(new Permission("Delete user by id", "/users/{id}", "DELETE", "USER"));
-            arr.add(new Permission("Get user by id", "/users/{id}", "GET", "USER"));
-            arr.add(new Permission("Update user", "/users", "PUT", "USER"));
+            arr.add(new Permission("Create a user", "/Users", "POST", "USER"));
+            arr.add(new Permission("Delete user by id", "/Users/{id}", "DELETE", "USER"));
+            arr.add(new Permission("Get user by id", "/Users/{id}", "GET", "USER"));
+            arr.add(new Permission("Update user", "/Users", "PUT", "USER"));
             arr.add(new Permission("Update user (client)", "/Users/UpdateClient", "PUT", "USER"));
+            arr.add(new Permission("Get all users", "/Users", "GET", "USER"));
 
             arr.add(new Permission("Get voucher by id", "/Voucher/{id}", "GET", "VOUCHER"));
             arr.add(new Permission("Create a voucher", "/Voucher", "POST", "VOUCHER"));
