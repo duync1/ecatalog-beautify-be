@@ -40,6 +40,16 @@ public class UserService {
         return null;
     }
 
+    public User handleCreateUserAdmin(User user){
+        if(this.userRepository.existsByEmail(user.getEmail()) == false){
+            Role role = this.roleService.getRoleByName(user.getRole().getName());
+            user.setRole(role);
+            this.userRepository.save(user);
+            return user;
+        }
+        return null;
+    }
+
     public ResCreateUserDTO convertToResCreateUserDTO(User user){
         ResCreateUserDTO resCreateUserDTO = new ResCreateUserDTO();
         resCreateUserDTO.setId(user.getId());

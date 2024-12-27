@@ -43,6 +43,15 @@ public class UserController {
         return ResponseEntity.ok().body(resCreateUserDTO);
     }
 
+    @PostMapping("/Users/CreateUserAdmin")
+    public ResponseEntity<ResCreateUserDTO> createNewUserAdmin(@RequestBody User user){
+        String hashPassword = this.passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashPassword);
+        User newUser = this.userService.handleCreateUserAdmin(user);
+        ResCreateUserDTO resCreateUserDTO = this.userService.convertToResCreateUserDTO(newUser);
+        return ResponseEntity.ok().body(resCreateUserDTO);
+    }
+
     @DeleteMapping("/Users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) throws IdInvalidException{
         User user = this.userService.fetchUserById(id);
