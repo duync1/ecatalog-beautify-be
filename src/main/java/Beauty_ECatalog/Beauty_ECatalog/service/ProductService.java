@@ -100,7 +100,7 @@ public class ProductService {
         this.productRepository.save(product);
     }
 
-    public Product updateProduct(Product product, MultipartFile multipartFile, String categoryName) throws IOException {
+    public Product updateProduct(Product product, MultipartFile multipartFile, MultipartFile subImage1, MultipartFile subImage2,MultipartFile subImage3, String categoryName) throws IOException {
         Product currentProduct = this.getProductById(product.getId());
         if (currentProduct != null) {
             currentProduct.setName(product.getName());
@@ -111,6 +111,12 @@ public class ProductService {
                 String imagePath = saveImage(multipartFile);
                 currentProduct.setProductImage(imagePath);
             }
+            String subImage1db = saveImage(subImage1);
+            String subImage2db = saveImage(subImage2);
+            String subImage3db = saveImage(subImage3);
+            currentProduct.setSubImage1(subImage1db);
+            currentProduct.setSubImage2(subImage2db);
+            currentProduct.setSubImage3(subImage3db);
             Category category = this.categoryRepository.findByName(categoryName);
             currentProduct.setCategory(category);
             return this.productRepository.save(currentProduct);

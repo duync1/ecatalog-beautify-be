@@ -72,7 +72,7 @@ public class ProductController {
     }
     
     @PutMapping("/Product")
-    public ResponseEntity<Product> updateProduct(@RequestParam("id") long id, @RequestParam("name") String name, @RequestParam("unitPrice") int price, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam("brand") String brand, @RequestParam("category") String categoryName, @RequestParam("detailDescription") String description) throws IdInvalidException, IOException{
+    public ResponseEntity<Product> updateProduct(@RequestParam("id") long id, @RequestParam("name") String name, @RequestParam("unitPrice") int price, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam("subImage1") MultipartFile subImage1, @RequestParam("subImage2") MultipartFile subImage2, @RequestParam("subImage3") MultipartFile subImage3, @RequestParam("brand") String brand, @RequestParam("category") String categoryName, @RequestParam("detailDescription") String description) throws IdInvalidException, IOException{
         Product temp = this.productService.getProductById(id);
         if(!temp.getName().equals(name)){
             boolean check = this.productService.findProductByName(name);
@@ -86,7 +86,7 @@ public class ProductController {
         product.setUnitPrice(price);
         product.setBrand(brand);
         product.setDetailDescription(description);
-        Product updateProduct = this.productService.updateProduct(product, image, categoryName);
+        Product updateProduct = this.productService.updateProduct(product, image, subImage1, subImage2, subImage3, categoryName);
         if(updateProduct == null){
             throw new IdInvalidException("San pham khong ton tai");
         }
