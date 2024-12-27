@@ -23,20 +23,22 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final String uploadDir = "src/main/resources/static/uploads/";
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository){
+
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
     }
 
-    public Product getProductById(long id){
+    public Product getProductById(long id) {
         Optional<Product> product = this.productRepository.findById(id);
-        if(product.isPresent()){
+        if (product.isPresent()) {
             return product.get();
         }
         return null;
     }
 
-    public Product createProduct(Product product, MultipartFile multipartFile, MultipartFile subImage1, MultipartFile subImage2, MultipartFile subImage3, String categoryName) throws IOException{
+    public Product createProduct(Product product, MultipartFile multipartFile, MultipartFile subImage1,
+            MultipartFile subImage2, MultipartFile subImage3, String categoryName) throws IOException {
         String imagePath = saveImage(multipartFile);
         String subImage1db = saveImage(subImage1);
         String subImage2db = saveImage(subImage2);
@@ -58,14 +60,13 @@ public class ProductService {
         if (!Files.exists(path)) {
             Files.createDirectories(path);
         }
-    
+
         String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
         Path filePath = path.resolve(fileName);
         Files.write(filePath, imageFile.getBytes());
-    
+
         return "/uploads/" + fileName;
     }
-    
 
     public ResultPaginationDTO fetchAllProducts(Specification<Product> spec, Pageable pageable) {
         Page<Product> page = this.productRepository.findAll(spec, pageable);
@@ -80,27 +81,28 @@ public class ProductService {
         return resultPaginationDTO;
     }
 
-    public boolean findProductByName(String name){
+    public boolean findProductByName(String name) {
         boolean product = this.productRepository.existsByName(name);
-        if(product){
+        if (product) {
             return true;
         }
         return false;
     }
 
-    public void deleteProduct(long id){
+    public void deleteProduct(long id) {
         Product product = this.getProductById(id);
         product.setDeleted(true);
         this.productRepository.save(product);
     }
 
-    public void backProduct(long id){
+    public void backProduct(long id) {
         Product product = this.getProductById(id);
         product.setDeleted(false);
         this.productRepository.save(product);
     }
 
-    public Product updateProduct(Product product, MultipartFile multipartFile, MultipartFile subImage1, MultipartFile subImage2,MultipartFile subImage3, String categoryName) throws IOException {
+    public Product updateProduct(Product product, MultipartFile multipartFile, MultipartFile subImage1,
+            MultipartFile subImage2, MultipartFile subImage3, String categoryName) throws IOException {
         Product currentProduct = this.getProductById(product.getId());
         if (currentProduct != null) {
             currentProduct.setName(product.getName());
@@ -111,12 +113,19 @@ public class ProductService {
                 String imagePath = saveImage(multipartFile);
                 currentProduct.setProductImage(imagePath);
             }
-            String subImage1db = saveImage(subImage1);
-            String subImage2db = saveImage(subImage2);
-            String subImage3db = saveImage(subImage3);
-            currentProduct.setSubImage1(subImage1db);
-            currentProduct.setSubImage2(subImage2db);
-            currentProduct.setSubImage3(subImage3db);
+            if (subImage1 != null && !subImage1.isEmpty()) {
+                String subImage1db = saveImage(subImage1);
+                currentProduct.setSubImage1(subImage1db);
+            }
+            if (subImage2 != null && !subImage2.isEmpty()) {
+                String subImage2db = saveImage(subImage2);
+                currentProduct.setSubImage2(subImage2db);
+            }
+            if (subImage3 != null && !subImage3.isEmpty()) {
+                String subImage3db = saveImage(subImage3);
+                currentProduct.setSubImage3(subImage3db);
+            }
+
             Category category = this.categoryRepository.findByName(categoryName);
             currentProduct.setCategory(category);
             return this.productRepository.save(currentProduct);
@@ -124,11 +133,11 @@ public class ProductService {
         return null;
     }
 
-    public Product getProductByName(String name){
+    public Product getProductByName(String name) {
         return this.productRepository.findByName(name);
     }
-    
-    public Product addQuanityFromImport(Product product){
+
+    public Product addQuanityFromImport(Product product) {
         return this.productRepository.save(product);
     }
 }
