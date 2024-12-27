@@ -44,10 +44,13 @@ public class UserController {
     }
 
     @PostMapping("/Users/CreateUserAdmin")
-    public ResponseEntity<ResCreateUserDTO> createNewUserAdmin(@RequestBody User user){
+    public ResponseEntity<ResCreateUserDTO> createNewUserAdmin(@RequestBody User user) throws IdInvalidException{
         String hashPassword = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassword);
         User newUser = this.userService.handleCreateUserAdmin(user);
+        if(newUser == null){
+            throw new IdInvalidException("Email da ton tai");
+        }
         ResCreateUserDTO resCreateUserDTO = this.userService.convertToResCreateUserDTO(newUser);
         return ResponseEntity.ok().body(resCreateUserDTO);
     }
