@@ -108,6 +108,7 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Get all supplier", "/Suppliers", "GET", "SUPPLIER"));
             arr.add(new Permission("Update supplier", "/Supplier", "PUT", "SUPPLIER"));
             arr.add(new Permission("Delete supplier by id", "/Supplier/{id}", "DELETE", "SUPPLIER"));
+            arr.add(new Permission("Get supplier by id", "/Supplier/{id}", "GET", "SUPPLIER"));
             arr.add(new Permission("Restore supplier by id", "/Supplier/Back/{id}", "GET", "SUPPLIER"));
 
             arr.add(new Permission("Create a user", "/users", "POST", "USER"));
@@ -162,7 +163,6 @@ public class DatabaseInitializer implements CommandLineRunner {
             if (adminRole != null) {
                 adminUser.setRole(adminRole);
             }
-
             this.userRepository.save(adminUser);
         }
 

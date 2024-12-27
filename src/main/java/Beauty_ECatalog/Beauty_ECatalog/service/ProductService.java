@@ -36,10 +36,16 @@ public class ProductService {
         return null;
     }
 
-    public Product createProduct(Product product, MultipartFile multipartFile, String categoryName) throws IOException{
+    public Product createProduct(Product product, MultipartFile multipartFile, MultipartFile subImage1, MultipartFile subImage2, MultipartFile subImage3, String categoryName) throws IOException{
         String imagePath = saveImage(multipartFile);
+        String subImage1db = saveImage(subImage1);
+        String subImage2db = saveImage(subImage2);
+        String subImage3db = saveImage(subImage3);
         Category category = this.categoryRepository.findByName(categoryName);
         product.setProductImage(imagePath);
+        product.setSubImage1(subImage1db);
+        product.setSubImage2(subImage2db);
+        product.setSubImage3(subImage3db);
         product.setCategory(category);
         return this.productRepository.save(product);
     }

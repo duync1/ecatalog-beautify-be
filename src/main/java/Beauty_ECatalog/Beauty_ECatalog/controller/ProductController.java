@@ -39,8 +39,8 @@ public class ProductController {
     }
 
     @PostMapping("/Product")
-    public ResponseEntity<Product> createProduct(@RequestParam("name") String name, @RequestParam("unitPrice") int price, 
-        @RequestParam("image") MultipartFile image, @RequestParam("brand") String brand, @RequestParam("category") String categoryName, @RequestParam("detailDescription") String description
+    public ResponseEntity<Product> createProduct(@RequestParam("name") String name, @RequestParam("unitPrice") double price, 
+        @RequestParam("image") MultipartFile image, @RequestParam("subImage1") MultipartFile subImage1, @RequestParam("subImage2") MultipartFile subImage2, @RequestParam("subImage3") MultipartFile subImage3, @RequestParam("brand") String brand, @RequestParam("category") String categoryName, @RequestParam("detailDescription") String description
     ) throws IOException, IdInvalidException{
         if(this.productService.findProductByName(name)){
             throw new IdInvalidException("Ten san pham da ton tai");
@@ -51,7 +51,7 @@ public class ProductController {
         product.setBrand(brand);
         product.setDetailDescription(description);
         product.setDeleted(false);
-        return ResponseEntity.ok().body(this.productService.createProduct(product, image, categoryName));
+        return ResponseEntity.ok().body(this.productService.createProduct(product, image, subImage1, subImage2, subImage3, categoryName));
     }
 
     @GetMapping("/Product")

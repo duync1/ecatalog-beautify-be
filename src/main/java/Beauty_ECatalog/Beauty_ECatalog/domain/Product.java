@@ -29,8 +29,11 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
-    private int unitPrice;
+    private double unitPrice;
     private String productImage;
+    private String subImage1;
+    private String subImage2;
+    private String subImage3;
     private int quantity;
     @Column(columnDefinition = "MEDIUMTEXT")
     private String detailDescription;

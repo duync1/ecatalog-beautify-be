@@ -57,4 +57,9 @@ public class SupplierController {
         this.supplierService.handleRestoreSupplier(id);
         return ResponseEntity.ok().body(null);
     }
+
+    @GetMapping("/Supplier/{id}")
+    public ResponseEntity<Supplier> getDetailSupplier(@PathVariable("id") long id){
+        return ResponseEntity.ok().body(this.supplierService.findById(id));
+    }
 }
