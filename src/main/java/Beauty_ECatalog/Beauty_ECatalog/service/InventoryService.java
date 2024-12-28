@@ -68,7 +68,7 @@ public class InventoryService {
                             .findFirst()
                     )
                     .map(InventoryDetail::getEndingInventory)
-                    .orElse(0);
+                    .orElse(product.getQuantity());  
 
             Integer totalImported = importTicketDetailRepository.findTotalImportedByProductAndDateRange(
                     product.getId(), startDate, endDate);
