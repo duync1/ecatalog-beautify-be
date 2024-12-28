@@ -18,7 +18,7 @@ import lombok.Setter;
 public class ResImportTicketDetail {
     private String supplier;
     private Instant date;
-    private long total;
+    private double total;
     private boolean status;
     private List<ProductInTicket> listProducts;
 

@@ -47,6 +47,7 @@ public class ImportTicketService {
             ImportTicketDetail importTicketDetail = new ImportTicketDetail();
             importTicketDetail.setProduct(currentProduct);
             importTicketDetail.setQuantity(product.getQuantity());
+            importTicketDetail.setImportPrice(product.getImportPrice());
             importTicketDetail.setImportTicket(saveImportTicket);
             importTicketDetail = this.importTicketDetailService.createImportTicketDetail(importTicketDetail);
         }

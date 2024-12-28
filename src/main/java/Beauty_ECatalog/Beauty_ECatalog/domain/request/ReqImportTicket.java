@@ -15,7 +15,7 @@ import lombok.Setter;
 public class ReqImportTicket {
     private String supplierName;
     private Instant date;
-    private int totalPrice;
+    private double totalPrice;
     private List<ProductInfor> listProducts;
 
     @Setter
@@ -24,6 +24,7 @@ public class ReqImportTicket {
     @NoArgsConstructor
     public static class ProductInfor{
         private String productName;
+        private double importPrice;
         private int quantity;
     }
 }

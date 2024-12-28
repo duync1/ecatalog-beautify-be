@@ -30,7 +30,7 @@ public class ImportTicket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private Instant date;
-    private long total;
+    private double total;
     private boolean status;
     @ManyToOne
     @JoinColumn(name = "supplier_id")
