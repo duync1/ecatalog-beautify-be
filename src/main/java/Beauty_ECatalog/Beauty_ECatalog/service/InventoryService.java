@@ -25,53 +25,61 @@ public class InventoryService {
     private final SaleTicketDetailRepository saleTicketDetailRepository;
     private final ImportTicketDetailRepository importTicketDetailRepository;
     private final InventoryRepository inventoryRepository;
+
     public InventoryService(ProductRepository productRepository,
                             SaleTicketDetailRepository saleTicketDetailRepository,
-                            ImportTicketDetailRepository importTicketDetailRepository, InventoryRepository inventoryRepository) {
+                            ImportTicketDetailRepository importTicketDetailRepository,
+                            InventoryRepository inventoryRepository) {
         this.productRepository = productRepository;
         this.saleTicketDetailRepository = saleTicketDetailRepository;
         this.importTicketDetailRepository = importTicketDetailRepository;
         this.inventoryRepository = inventoryRepository;
     }
 
-    
     public Inventory saveOrUpdateInventory(int month, int year) {
-        // Kiểm tra xem Inventory đã tồn tại chưa
         Optional<Inventory> existingInventory = inventoryRepository.findByMonthAndYear(month, year);
-        
-        Inventory inventory = existingInventory.orElseGet(() -> {
-            Inventory newInventory = new Inventory();
-            newInventory.setMonth(month);
-            newInventory.setYear(year);
-            newInventory.setDetails(new ArrayList<>());
-            return newInventory;
-        });
-    
-        // Tạo khoảng thời gian (range) cho tháng và năm được yêu cầu
+
+        if (existingInventory.isPresent()) {
+            return existingInventory.get();
+        }
+
+        Inventory inventory = new Inventory();
+        inventory.setMonth(month);
+        inventory.setYear(year);
+        inventory.setDetails(new ArrayList<>());
+
         LocalDate startLocalDate = LocalDate.of(year, month, 1);
         LocalDate endLocalDate = startLocalDate.with(TemporalAdjusters.lastDayOfMonth());
         Instant startDate = startLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
         Instant endDate = endLocalDate.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
-    
-        // Lấy danh sách tất cả các sản phẩm
+
         List<Product> products = productRepository.findAll();
-    
-        // Cập nhật InventoryDetail cho từng sản phẩm
+
         List<InventoryDetail> details = new ArrayList<>();
         for (Product product : products) {
-            int beginningInventory = product.getQuantity();
-    
+            int previousMonth = (month == 1) ? 12 : month - 1;
+            int previousYear = (month == 1) ? year - 1 : year;
+
+            Optional<Inventory> previousInventory = inventoryRepository.findByMonthAndYear(previousMonth, previousYear);
+
+            int beginningInventory = previousInventory
+                    .flatMap(inv -> inv.getDetails().stream()
+                            .filter(detail -> detail.getProductName().equals(product.getName()))
+                            .findFirst()
+                    )
+                    .map(InventoryDetail::getEndingInventory)
+                    .orElse(0);
+
             Integer totalImported = importTicketDetailRepository.findTotalImportedByProductAndDateRange(
                     product.getId(), startDate, endDate);
             totalImported = (totalImported != null) ? totalImported : 0;
-    
+
             Integer totalSold = saleTicketDetailRepository.findTotalSoldByProductAndDateRange(
                     product.getId(), startDate, endDate);
             totalSold = (totalSold != null) ? totalSold : 0;
-    
+
             int endingInventory = beginningInventory + totalImported - totalSold;
-    
-            // Tạo hoặc cập nhật InventoryDetail
+
             InventoryDetail detailInventory = new InventoryDetail();
             detailInventory.setProductName(product.getName());
             detailInventory.setBeginningInventory(beginningInventory);
@@ -79,15 +87,12 @@ public class InventoryService {
             detailInventory.setTotalSold(totalSold);
             detailInventory.setEndingInventory(endingInventory);
             detailInventory.setInventory(inventory);
-    
+
             details.add(detailInventory);
         }
-    
-        // Cập nhật Inventory với các InventoryDetail mới
+
         inventory.setDetails(details);
-    
-        // Lưu Inventory
+
         return inventoryRepository.save(inventory);
     }
-    
 }
