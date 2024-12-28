@@ -73,7 +73,12 @@ public class UserService {
         this.userRepository.delete(user);
     }
     public User handleUpdateUser(User user){
-        User currentUser = this.userRepository.save(user);
+        User dbUser = this.fetchUserById(user.getId());
+        Role role = this.roleService.getRoleByName(user.getRole().getName());
+        dbUser.setRole(role);
+        dbUser.setEmail(user.getEmail());
+        dbUser.setName(user.getName());
+        User currentUser = this.userRepository.save(dbUser);
         return currentUser;
     }
 
