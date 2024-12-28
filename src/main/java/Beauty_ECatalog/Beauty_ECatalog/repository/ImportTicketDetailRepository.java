@@ -15,7 +15,7 @@ import Beauty_ECatalog.Beauty_ECatalog.domain.ImportTicketDetail;
 public interface ImportTicketDetailRepository extends JpaRepository<ImportTicketDetail, Long>{
     @Query("SELECT SUM(itd.quantity) FROM ImportTicketDetail itd " +
            "JOIN ImportTicket it ON itd.importTicket.id = it.id " +
-           "WHERE it.date BETWEEN :startDate AND :endDate AND itd.product.id = :productId")
+           "WHERE it.date BETWEEN :startDate AND :endDate AND itd.product.id = :productId AND it.status = true")
     Integer findTotalImportedByProductAndDateRange(Long productId, Instant startDate, Instant endDate);
 
     public List<ImportTicketDetail> findByImportTicket(ImportTicket importTicket);

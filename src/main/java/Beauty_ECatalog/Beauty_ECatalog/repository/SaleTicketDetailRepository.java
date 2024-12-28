@@ -17,7 +17,7 @@ public interface SaleTicketDetailRepository extends JpaRepository<SaleTicketDeta
 
     @Query("SELECT SUM(std.quantity) FROM SaleTicketDetail std " +
            "JOIN SaleTicket st ON std.saleTicket.id = st.id " +
-           "WHERE st.date BETWEEN :startDate AND :endDate AND std.product.id = :productId")
+           "WHERE st.date BETWEEN :startDate AND :endDate AND std.product.id = :productId AND st.status = 'COMPLETED'")
     Integer findTotalSoldByProductAndDateRange(Long productId, Instant startDate, Instant endDate);
     
     List<SaleTicketDetail> findBySaleTicket(SaleTicket saleTicket);
