@@ -18,9 +18,11 @@ import jakarta.mail.internet.MimeMessage;
 public class EmailService {
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine springTemplateEngine;
-    public EmailService(JavaMailSender javaMailSender, SpringTemplateEngine springTemplateEngine) {
+    private final UserService userService;
+    public EmailService(JavaMailSender javaMailSender, SpringTemplateEngine springTemplateEngine, UserService userService) {
         this.javaMailSender = javaMailSender;
         this.springTemplateEngine = springTemplateEngine;
+        this.userService = userService;
     }
 
     public void sendEmailSync(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
@@ -44,4 +46,13 @@ public class EmailService {
         this.sendEmailSync(to, subject, content, false, true);
     }
 
+    @Async
+    public void sendPasswordFromTemplateSync(String to, String subject, String templateName) {
+        Context context = new Context();
+        String newPassword = this.userService.forgotPassword(to);
+        context.setVariable("NewPassword", newPassword);
+        context.setVariable("username", to);
+        String content = this.springTemplateEngine.process(templateName, context);
+        this.sendEmailSync(to, subject, content, false, true);
+    }
 }

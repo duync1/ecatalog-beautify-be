@@ -1,5 +1,6 @@
 package Beauty_ECatalog.Beauty_ECatalog.controller;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,12 @@ public class EmailController {
     @GetMapping("/Email/Thankyou")
     public ResponseEntity<Void> sendEmailThankYou(@RequestParam("email") String email, @RequestParam("cusName") String cusName){
         this.emailService.sendEmailFromTemplateSync(email, "Thank you", "thankyou", cusName);
+        return ResponseEntity.ok().body(null);
+    }
+
+    @GetMapping("/Email/ForgotPassword")
+    public ResponseEntity<Void> sendEmailForgotPassword(@RequestParam("email") String email){
+        this.emailService.sendPasswordFromTemplateSync(email, "Password Recovery", "forgotpassword");
         return ResponseEntity.ok().body(null);
     }
 }

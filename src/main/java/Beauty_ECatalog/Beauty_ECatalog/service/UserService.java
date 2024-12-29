@@ -6,15 +6,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import Beauty_ECatalog.Beauty_ECatalog.domain.Role;
-import Beauty_ECatalog.Beauty_ECatalog.domain.Supplier;
+
 import Beauty_ECatalog.Beauty_ECatalog.domain.User;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResCreateUserDTO;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResultPaginationDTO;
@@ -24,10 +26,12 @@ import Beauty_ECatalog.Beauty_ECatalog.repository.UserRepository;
 public class UserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
     private final String uploadDir = "src/main/resources/static/uploads/";
-    public UserService(UserRepository userRepository, RoleService roleService){
+    public UserService(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User handleCreateUser(User user){
@@ -152,5 +156,24 @@ public class UserService {
         resultPaginationDTO.setMeta(meta);
         resultPaginationDTO.setResult(page.getContent());
         return resultPaginationDTO;
+    }
+
+    public String forgotPassword(String email){
+        User user = this.handleGetUserByUsername(email);
+        String newPassword = this.randomPassword();
+        String hashPassword = this.passwordEncoder.encode(newPassword);
+        user.setPassword(hashPassword);
+        user = this.userRepository.save(user);
+        return newPassword;
+    }
+
+    public String randomPassword(){
+        Random random = new Random();
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            int digit = random.nextInt(10);
+            result.append(digit);
+        }
+        return result.toString();
     }
 }
