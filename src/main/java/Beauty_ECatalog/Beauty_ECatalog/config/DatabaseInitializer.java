@@ -133,6 +133,8 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Confirm delivery order ticket", "/SaleTickets/ConfirmDelivery", "POST", "ORDER_TICKET"));
             arr.add(new Permission("Get all order tickets", "/SaleTickets", "GET", "ORDER_TICKET"));
             arr.add(new Permission("Delete order ticket", "/SaleTickets/{id}", "DELETE", "ORDER_TICKET"));
+
+            arr.add(new Permission("Get inventory", "/Inventory/Save", "POST", "INVENTORY"));
             this.permissionRepository.saveAll(arr);
         }
 
