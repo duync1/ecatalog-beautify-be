@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Thank You!</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+      }
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        padding: 20px;
+      }
+      .header {
+        text-align: center;
+        padding: 20px;
+        background-color: #ff6b6b;
+        color: #ffffff;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+      .content {
+        margin-top: 20px;
+        line-height: 1.6;
+        color: #333333;
+      }
+      .content p {
+        margin-bottom: 10px;
+      }
+      .footer {
+        text-align: center;
+        margin-top: 30px;
+        color: #777777;
+        font-size: 14px;
+      }
+      .footer a {
+        color: #ff6b6b;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Thank You!</h1>
+      </div>
+      <div class="content">
+        <p>Dear <span th:text="${name}">Customer</span>,</p>
+        <p>
+          Thank you for trusting and shopping with us at
+          <strong>Beautify</strong>.
+        </p>
+        <p>
+          We truly appreciate your support and will continue to strive to bring
+          you the best quality products.
+        </p>
+        <p>
+          We hope you are satisfied with our products. If you have any questions
+          or feedback, feel free to reach out to us at
+        </p>
+        <p>Wishing you a wonderful day!</p>
+      </div>
+      <div class="footer">
+        <p>Sincerely,</p>
+        <p>The Beautify Team</p>
+      </div>
+    </div>
+  </body>
+</html>
