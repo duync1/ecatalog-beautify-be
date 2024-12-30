@@ -89,4 +89,12 @@ public class UserController {
     public ResponseEntity<ResultPaginationDTO> getAllUsers (@Filter Specification<User> spec, Pageable pageable){
         return ResponseEntity.ok().body(this.userService.fetchAllUsers(spec, pageable));
     }
+
+    @PostMapping("/Users/ChangePassword")
+    public ResponseEntity<User> changePassword(@RequestParam("email") String email, @RequestParam("oldPassword") String oldPassword, @RequestParam("password") String password) throws IdInvalidException{
+        if(this.userService.changePassword(email, oldPassword, password) == null){
+            throw new IdInvalidException("Mat khau hien tai khong dung");
+        }
+        return ResponseEntity.ok().body(this.userService.changePassword(email, oldPassword, password));
+    }
 }

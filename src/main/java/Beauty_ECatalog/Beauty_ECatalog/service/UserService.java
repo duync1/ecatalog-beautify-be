@@ -176,4 +176,14 @@ public class UserService {
         }
         return result.toString();
     }
+
+    public User changePassword(String email, String oldPassword, String password){
+        User user = this.handleGetUserByUsername(email);
+        if(!this.passwordEncoder.matches(oldPassword, user.getPassword())){
+            return null;
+        }
+        String newPassword = passwordEncoder.encode(password);
+        user.setPassword(newPassword);
+        return this.userRepository.save(user);
+    }
 }
