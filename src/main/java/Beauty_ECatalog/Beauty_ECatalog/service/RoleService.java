@@ -93,4 +93,16 @@ public class RoleService {
     public Role getRoleByName(String name){
         return this.roleRepository.findByName(name);
     }
+
+    public Role disableRole(long id){
+        Role role = this.fetchById(id);
+        role.setActive(false);
+        return this.roleRepository.save(role);
+    }
+
+    public Role activeRole(long id) {
+        Role role = this.fetchById(id);
+        role.setActive(true);
+        return this.roleRepository.save(role);
+    }
 }

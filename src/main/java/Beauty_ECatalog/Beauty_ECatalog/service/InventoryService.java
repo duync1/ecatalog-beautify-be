@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import Beauty_ECatalog.Beauty_ECatalog.domain.Inventory;
 import Beauty_ECatalog.Beauty_ECatalog.domain.InventoryDetail;
 import Beauty_ECatalog.Beauty_ECatalog.domain.Product;
+import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResInventory;
 import Beauty_ECatalog.Beauty_ECatalog.repository.ImportTicketDetailRepository;
+import Beauty_ECatalog.Beauty_ECatalog.repository.InventoryDetailRepository;
 import Beauty_ECatalog.Beauty_ECatalog.repository.InventoryRepository;
 import Beauty_ECatalog.Beauty_ECatalog.repository.ProductRepository;
 import Beauty_ECatalog.Beauty_ECatalog.repository.SaleTicketDetailRepository;
@@ -25,15 +27,16 @@ public class InventoryService {
     private final SaleTicketDetailRepository saleTicketDetailRepository;
     private final ImportTicketDetailRepository importTicketDetailRepository;
     private final InventoryRepository inventoryRepository;
-
+    private final InventoryDetailRepository inventoryDetailRepository;
     public InventoryService(ProductRepository productRepository,
                             SaleTicketDetailRepository saleTicketDetailRepository,
                             ImportTicketDetailRepository importTicketDetailRepository,
-                            InventoryRepository inventoryRepository) {
+                            InventoryRepository inventoryRepository, InventoryDetailRepository inventoryDetailRepository) {
         this.productRepository = productRepository;
         this.saleTicketDetailRepository = saleTicketDetailRepository;
         this.importTicketDetailRepository = importTicketDetailRepository;
         this.inventoryRepository = inventoryRepository;
+        this.inventoryDetailRepository = inventoryDetailRepository;
     }
 
     public Inventory saveOrUpdateInventory(int month, int year) {
@@ -94,5 +97,25 @@ public class InventoryService {
         inventory.setDetails(details);
 
         return inventoryRepository.save(inventory);
+    }
+
+    public List<ResInventory> getInventory(int month, int year){
+        Optional<Inventory> inventory = this.inventoryRepository.findByMonthAndYear(month, year);
+        if(inventory.isPresent()){
+            List<InventoryDetail> lists = this.inventoryDetailRepository.findByInventory(inventory.get());
+            List<ResInventory> listResponse = new ArrayList<>();
+            for(InventoryDetail inventoryDetail : lists){
+                ResInventory resInventory = new ResInventory();
+                Product product = this.productRepository.findByName(inventoryDetail.getProductName());
+                resInventory.setProduct(product);
+                resInventory.setBeginningInventory(inventoryDetail.getBeginningInventory());
+                resInventory.setEndingInventory(inventoryDetail.getEndingInventory());
+                resInventory.setTotalImported(inventoryDetail.getTotalImported());
+                resInventory.setTotalSold(inventoryDetail.getTotalSold());
+                listResponse.add(resInventory);
+            }
+            return listResponse;
+        }
+        return null;
     }
 }

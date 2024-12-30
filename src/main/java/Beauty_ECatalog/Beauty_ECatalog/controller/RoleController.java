@@ -79,4 +79,14 @@ public class RoleController {
             return ResponseEntity.ok().body(role);
         }
     }
+
+    @GetMapping("/roles/disable/{id}")
+    public ResponseEntity<Role> disableRole(@PathVariable("id") long id) {
+        return ResponseEntity.ok().body(this.roleService.disableRole(id));
+    }
+
+    @GetMapping("/roles/active/{id}")
+    public ResponseEntity<Role> activeRole(@PathVariable("id") long id){
+        return ResponseEntity.ok().body(this.roleService.activeRole(id));
+    }
 }
