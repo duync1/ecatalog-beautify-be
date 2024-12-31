@@ -127,6 +127,7 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Get all vouchers", "/Voucher", "GET", "VOUCHER"));
 
             arr.add(new Permission("Create order ticket client", "/SaleTickets/Client", "POST", "ORDER_TICKET"));
+            arr.add(new Permission("Create order ticket admin", " /SaleTickets/CreateTicketAdmin", "POST", "ORDER_TICKET"));
             arr.add(new Permission("Get all order ticket client", "/SaleTickets/Client/GetAllSaleTickets", "GET", "ORDER_TICKET"));
             arr.add(new Permission("Get detail order ticket client", "/SaleTickets/Clients/GetDetail/{id}", "GET", "ORDER_TICKET"));
             arr.add(new Permission("Confirm complete order ticket", "/SaleTickets/ConfirmComplete", "POST", "ORDER_TICKET"));
@@ -135,6 +136,8 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Delete order ticket", "/SaleTickets/{id}", "DELETE", "ORDER_TICKET"));
 
             arr.add(new Permission("Get inventory", "/Inventory/Save", "POST", "INVENTORY"));
+            arr.add(new Permission("Get inventory detail", "/Inventory/Detail", "GET", "INVENTORY"));
+
             this.permissionRepository.saveAll(arr);
         }
 
