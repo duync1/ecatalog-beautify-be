@@ -41,61 +41,83 @@ public class InventoryService {
 
     public Inventory saveOrUpdateInventory(int month, int year) {
         Optional<Inventory> existingInventory = inventoryRepository.findByMonthAndYear(month, year);
-
-        if (existingInventory.isPresent()) {
-            return existingInventory.get();
-        }
-
-        Inventory inventory = new Inventory();
-        inventory.setMonth(month);
-        inventory.setYear(year);
-        inventory.setDetails(new ArrayList<>());
-
+    
         LocalDate startLocalDate = LocalDate.of(year, month, 1);
         LocalDate endLocalDate = startLocalDate.with(TemporalAdjusters.lastDayOfMonth());
         Instant startDate = startLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
         Instant endDate = endLocalDate.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()).toInstant();
-
-        List<Product> products = productRepository.findAll();
-
-        List<InventoryDetail> details = new ArrayList<>();
-        for (Product product : products) {
+    
+        Inventory inventory;
+    
+        if (existingInventory.isPresent()) {
+            inventory = existingInventory.get();
+            for (InventoryDetail detail : inventory.getDetails()) {
+                Product product = productRepository.findByName(detail.getProductName());
+                if (product == null) continue;
+    
+                Integer totalImported = importTicketDetailRepository.findTotalImportedByProductAndDateRange(
+                        product.getId(), startDate, endDate);
+                totalImported = (totalImported != null) ? totalImported : 0;
+    
+                Integer totalSold = saleTicketDetailRepository.findTotalSoldByProductAndDateRange(
+                        product.getId(), startDate, endDate);
+                totalSold = (totalSold != null) ? totalSold : 0;
+    
+                int beginningInventory = detail.getBeginningInventory();
+                int endingInventory = beginningInventory + totalImported - totalSold;
+    
+                detail.setTotalImported(totalImported);
+                detail.setTotalSold(totalSold);
+                detail.setEndingInventory(endingInventory);
+            }
+        } else {
+            
+            inventory = new Inventory();
+            inventory.setMonth(month);
+            inventory.setYear(year);
+            inventory.setDetails(new ArrayList<>());
+    
             int previousMonth = (month == 1) ? 12 : month - 1;
             int previousYear = (month == 1) ? year - 1 : year;
-
+    
             Optional<Inventory> previousInventory = inventoryRepository.findByMonthAndYear(previousMonth, previousYear);
-
-            int beginningInventory = previousInventory
-                    .flatMap(inv -> inv.getDetails().stream()
-                            .filter(detail -> detail.getProductName().equals(product.getName()))
-                            .findFirst()
-                    )
-                    .map(InventoryDetail::getEndingInventory)
-                    .orElse(product.getQuantity());  
-
-            Integer totalImported = importTicketDetailRepository.findTotalImportedByProductAndDateRange(
-                    product.getId(), startDate, endDate);
-            totalImported = (totalImported != null) ? totalImported : 0;
-
-            Integer totalSold = saleTicketDetailRepository.findTotalSoldByProductAndDateRange(
-                    product.getId(), startDate, endDate);
-            totalSold = (totalSold != null) ? totalSold : 0;
-
-            int endingInventory = beginningInventory + totalImported - totalSold;
-
-            InventoryDetail detailInventory = new InventoryDetail();
-            detailInventory.setProductName(product.getName());
-            detailInventory.setBeginningInventory(beginningInventory);
-            detailInventory.setTotalImported(totalImported);
-            detailInventory.setTotalSold(totalSold);
-            detailInventory.setEndingInventory(endingInventory);
-            detailInventory.setInventory(inventory);
-
-            details.add(detailInventory);
+    
+            List<Product> products = productRepository.findAll();
+    
+            List<InventoryDetail> details = new ArrayList<>();
+            for (Product product : products) {
+                int beginningInventory = previousInventory
+                        .flatMap(inv -> inv.getDetails().stream()
+                                .filter(detail -> detail.getProductName().equals(product.getName()))
+                                .findFirst()
+                        )
+                        .map(InventoryDetail::getEndingInventory)
+                        .orElse(product.getQuantity());
+    
+                Integer totalImported = importTicketDetailRepository.findTotalImportedByProductAndDateRange(
+                        product.getId(), startDate, endDate);
+                totalImported = (totalImported != null) ? totalImported : 0;
+    
+                Integer totalSold = saleTicketDetailRepository.findTotalSoldByProductAndDateRange(
+                        product.getId(), startDate, endDate);
+                totalSold = (totalSold != null) ? totalSold : 0;
+    
+                int endingInventory = beginningInventory + totalImported - totalSold;
+    
+                InventoryDetail detailInventory = new InventoryDetail();
+                detailInventory.setProductName(product.getName());
+                detailInventory.setBeginningInventory(beginningInventory);
+                detailInventory.setTotalImported(totalImported);
+                detailInventory.setTotalSold(totalSold);
+                detailInventory.setEndingInventory(endingInventory);
+                detailInventory.setInventory(inventory);
+    
+                details.add(detailInventory);
+            }
+    
+            inventory.setDetails(details);
         }
-
-        inventory.setDetails(details);
-
+    
         return inventoryRepository.save(inventory);
     }
 
