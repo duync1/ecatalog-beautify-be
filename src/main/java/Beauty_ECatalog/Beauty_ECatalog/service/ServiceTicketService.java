@@ -24,11 +24,13 @@ public class ServiceTicketService {
     private final ServiceService serviceService;
     private final ServiceTicketDetailService serviceTicketDetailService;
     private final UserService userService;
-    public ServiceTicketService(ServiceTicketRepository serviceTicketRepository, ServiceService serviceService, ServiceTicketDetailService serviceTicketDetailService, UserService userService){
+    private final RoleService roleService;
+    public ServiceTicketService(ServiceTicketRepository serviceTicketRepository, ServiceService serviceService, ServiceTicketDetailService serviceTicketDetailService, UserService userService, RoleService roleService){
         this.serviceTicketRepository = serviceTicketRepository;
         this.serviceService = serviceService;
         this.serviceTicketDetailService = serviceTicketDetailService;
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     public ResultPaginationDTO fetchAllServiceTickets(Specification<ServiceTicket> spec, Pageable pageable) {
@@ -99,7 +101,9 @@ public class ServiceTicketService {
         if(user == null){
             updateUser.setName(cusName);
             updateUser.setPhoneNumber(cusPhone);
+            updateUser.setRole(this.roleService.getRoleByName("CUSTOMER"));
             updateUser = this.userService.handleCreateUserBase(updateUser);
+            serviceTicket.setUser(updateUser);
         }
         if(user != null){
             if(user.getPhoneNumber() == null || !user.getPhoneNumber().equals(cusPhone)){
@@ -107,9 +111,6 @@ public class ServiceTicketService {
                 user = this.userService.handleUpdateUser(user);
             }
             serviceTicket.setUser(user);
-        }
-        else{
-            serviceTicket.setUser(updateUser);
         }
         serviceTicket.setCheckout(false);
         serviceTicket.setStatus(false);
