@@ -36,10 +36,18 @@ public class UserService {
 
     public User handleCreateUser(User user){
         if(this.userRepository.existsByEmail(user.getEmail()) == false){
-            Role role = this.roleService.getRoleByName("CUSTOMER");
-            user.setRole(role);
-            this.userRepository.save(user);
-            return user;
+            User newUser = this.getUserByName(user.getName());
+            if(newUser != null){
+                newUser.setEmail(user.getEmail());
+                newUser.setPassword(user.getPassword());
+                return this.userRepository.save(newUser);
+            }
+            else{
+                Role role = this.roleService.getRoleByName("CUSTOMER");
+                user.setRole(role);
+                this.userRepository.save(user);
+                return user;
+            }
         }
         return null;
     }
