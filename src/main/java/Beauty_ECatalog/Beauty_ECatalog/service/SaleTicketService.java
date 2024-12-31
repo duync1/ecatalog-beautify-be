@@ -19,6 +19,7 @@ import Beauty_ECatalog.Beauty_ECatalog.domain.User;
 import Beauty_ECatalog.Beauty_ECatalog.domain.Voucher;
 import Beauty_ECatalog.Beauty_ECatalog.domain.request.ReqProduct;
 import Beauty_ECatalog.Beauty_ECatalog.domain.request.ReqSaleTicket;
+import Beauty_ECatalog.Beauty_ECatalog.domain.request.ReqSaleTicketAdmin;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResSaleTicketDetail.ProductInTicket;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResSaleTicketDetail;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResultPaginationDTO;
@@ -61,6 +62,37 @@ public class SaleTicketService {
             Product updateProduct = this.productService.getProductByName(product.getProductName());
             saleTicketDetail.setProduct(updateProduct);
             saleTicketDetail.setQuantity(product.getQuantity());
+            saleTicketDetail.setSaleTicket(saleTicket);
+            saleTicketDetail = this.saleTicketDetailRepository.save(saleTicketDetail);
+        }
+        return saleTicket;
+    }
+
+    public SaleTicket createSaleAdmin(ReqSaleTicketAdmin reqSaleTicketAdmin){
+        User user = this.userService.getUserByName(reqSaleTicketAdmin.getCusName());
+        SaleTicket saleTicket = new SaleTicket();
+        if(user == null){
+            User dbUser = new User();
+            dbUser.setName(reqSaleTicketAdmin.getCusName());
+            dbUser.setPhoneNumber(reqSaleTicketAdmin.getPhoneNumber());
+            dbUser.setAddress(reqSaleTicketAdmin.getAddress());
+            dbUser = this.userService.handleCreateUserBase(dbUser);
+            saleTicket.setUser(dbUser);
+        }
+        else{
+            saleTicket.setUser(user);
+        }
+        Voucher voucher = this.voucherService.getDiscountById(reqSaleTicketAdmin.getVoucherId());
+        saleTicket.setDate(reqSaleTicketAdmin.getDate());
+        saleTicket.setTotal(reqSaleTicketAdmin.getTotalPrice());
+        saleTicket.setDiscount(voucher);
+        saleTicket.setStatus(StatusEnum.PREPARING);
+        saleTicket = this.saleTicketRepository.save(saleTicket);
+        for(ReqProduct reqProduct : reqSaleTicketAdmin.getListProducts()){
+            SaleTicketDetail saleTicketDetail = new SaleTicketDetail();
+            Product updateProduct = this.productService.getProductByName(reqProduct.getProductName());
+            saleTicketDetail.setProduct(updateProduct);
+            saleTicketDetail.setQuantity(reqProduct.getQuantity());
             saleTicketDetail.setSaleTicket(saleTicket);
             saleTicketDetail = this.saleTicketDetailRepository.save(saleTicketDetail);
         }
@@ -136,4 +168,6 @@ public class SaleTicketService {
         }
         this.saleTicketRepository.delete(saleTicket);
     }
+
+    
 }

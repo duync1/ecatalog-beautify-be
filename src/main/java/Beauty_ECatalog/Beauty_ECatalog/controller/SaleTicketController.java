@@ -19,6 +19,7 @@ import com.turkraft.springfilter.boot.Filter;
 import Beauty_ECatalog.Beauty_ECatalog.domain.SaleTicket;
 
 import Beauty_ECatalog.Beauty_ECatalog.domain.request.ReqSaleTicket;
+import Beauty_ECatalog.Beauty_ECatalog.domain.request.ReqSaleTicketAdmin;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResSaleTicketDetail;
 import Beauty_ECatalog.Beauty_ECatalog.domain.response.ResultPaginationDTO;
 import Beauty_ECatalog.Beauty_ECatalog.service.SaleTicketService;
@@ -66,6 +67,11 @@ public class SaleTicketController {
     public ResponseEntity<Void> deleteSaleTicket(@PathVariable("id") long id){
         this.saleTicketService.deleteSaleTicket(id);
         return ResponseEntity.ok().body(null);
+    }
+
+    @PostMapping("/SaleTickets/CreateTicketAdmin")
+    public ResponseEntity<SaleTicket> createTicketAdmin(@RequestBody ReqSaleTicketAdmin reqSaleTicketAdmin){
+        return ResponseEntity.ok().body(this.saleTicketService.createSaleAdmin(reqSaleTicketAdmin));
     }
     
 }
