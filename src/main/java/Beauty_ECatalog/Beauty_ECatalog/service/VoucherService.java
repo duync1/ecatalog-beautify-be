@@ -35,8 +35,11 @@ public class VoucherService {
     }
 
     public Voucher updateVoucher(Voucher voucher){
-        boolean isExistByName = this.voucherRepository.existsByName(voucher.getName());
-        if(isExistByName) return null;
+        Voucher tempVoucher = this.getDiscountById(voucher.getId());
+        if(!tempVoucher.getName().equals(voucher.getName())){
+            boolean isExistByName = this.voucherRepository.existsByName(voucher.getName());
+            if(isExistByName) return null;
+        }
         Voucher dbVoucher = this.getDiscountById(voucher.getId());
         dbVoucher.setDiscountValue(voucher.getDiscountValue());
         dbVoucher.setName(voucher.getName());
