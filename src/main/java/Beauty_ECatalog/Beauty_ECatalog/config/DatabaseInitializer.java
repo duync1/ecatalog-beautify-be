@@ -81,7 +81,6 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Update a role", "/roles", "PUT", "ROLE"));
             arr.add(new Permission("Get all roles", "/roles", "GET", "ROLE"));
             arr.add(new Permission("Get role by id", "/roles/{id}", "GET", "ROLE"));
-            arr.add(new Permission("Delete role by id", "/roles/{id}", "DELETE", "ROLE"));
 
             arr.add(new Permission("Get service by id", "/services/{id}", "GET", "SERVICE"));
             arr.add(new Permission("Create a service", "/Service", "POST", "SERVICE"));
@@ -111,13 +110,10 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Get supplier by id", "/Supplier/{id}", "GET", "SUPPLIER"));
             arr.add(new Permission("Restore supplier by id", "/Supplier/Back/{id}", "GET", "SUPPLIER"));
 
-            arr.add(new Permission("Create a user", "/Users", "POST", "USER"));
             arr.add(new Permission("Create a user admin", "/Users/CreateUserAdmin", "POST", "USER"));
-            arr.add(new Permission("Delete user by id", "/Users/{id}", "DELETE", "USER"));
-            arr.add(new Permission("Get user by id", "/Users/{id}", "GET", "USER"));
-            arr.add(new Permission("Update user", "/Users", "PUT", "USER"));
+            arr.add(new Permission("Update a user admin", "/Users", "PUT", "USER"));
+            arr.add(new Permission("Get all user", "/Users", "GET", "USER"));
             arr.add(new Permission("Update user (client)", "/Users/UpdateClient", "PUT", "USER"));
-            arr.add(new Permission("Get all users", "/Users", "GET", "USER"));
 
             arr.add(new Permission("Get voucher by id", "/Voucher/{id}", "GET", "VOUCHER"));
             arr.add(new Permission("Create a voucher", "/Voucher", "POST", "VOUCHER"));
@@ -127,7 +123,7 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Get all vouchers", "/Voucher", "GET", "VOUCHER"));
 
             arr.add(new Permission("Create order ticket client", "/SaleTickets/Client", "POST", "ORDER_TICKET"));
-            arr.add(new Permission("Create order ticket admin", " /SaleTickets/CreateTicketAdmin", "POST", "ORDER_TICKET"));
+            arr.add(new Permission("Create order ticket admin", "/SaleTickets/CreateTicketAdmin", "POST", "ORDER_TICKET"));
             arr.add(new Permission("Get all order ticket client", "/SaleTickets/Client/GetAllSaleTickets", "GET", "ORDER_TICKET"));
             arr.add(new Permission("Get detail order ticket client", "/SaleTickets/Clients/GetDetail/{id}", "GET", "ORDER_TICKET"));
             arr.add(new Permission("Confirm complete order ticket", "/SaleTickets/ConfirmComplete", "POST", "ORDER_TICKET"));
@@ -146,24 +142,49 @@ public class DatabaseInitializer implements CommandLineRunner {
 
             Role adminRole = new Role();
             adminRole.setName("ADMIN");
-            adminRole.setDescription("Bo may la nhat");
+            adminRole.setDescription("Full permission");
             adminRole.setActive(true);
             adminRole.setPermissions(allPermissions);
 
             this.roleRepository.save(adminRole);
 
-            // Role customerRole = new Role();
-            // customerRole.setName("CUSTOMER");
-            // customerRole.setDescription("Customer role");
-            // customerRole.setActive(true);
-            // customerRole.setPermissions(allPermissions);
+            Role customerRole = new Role();
+            customerRole.setName("CUSTOMER");
+            customerRole.setDescription("Customer role");
+            customerRole.setActive(true);
+            List<Permission> customerPermissions = new ArrayList<>();
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/Product/{id}", "GET"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/Product", "GET"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/Category", "GET"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/Cart/GetCart", "GET"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/Cart/AddProductToCart", "POST"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/Cart/DeleteProductFromCart", "POST"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/ProductReview/CreateComment", "POST"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/ProductReviews", "GET"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/ProductReviews/{id}", "DELETE"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/ProductReviews", "PUT"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/services/{id}", "GET"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/Service", "GET"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/roles/{id}", "GET"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/ServiceTickets/Client", "POST"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/StoreReviews", "POST"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/StoreReviews", "GET"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/StoreReviews/{id}", "DELETE"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/StoreReviews", "PUT"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/Users/UpdateClient", "PUT"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/SaleTickets/Client", "POST"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/SaleTickets/Client/GetAllSaleTickets", "GET"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/SaleTickets/Clients/GetDetail/{id}", "GET"));
+            customerPermissions.add(this.permissionRepository.findByApiPathAndMethod("/SaleTickets/ConfirmComplete", "POST"));
+            customerRole.setPermissions(customerPermissions);
+            this.roleRepository.save(customerRole);
         }
 
         if (countUsers == 0) {
             User adminUser = new User();
             adminUser.setEmail("admin@gmail.com");
             adminUser.setAddress("kt");
-            adminUser.setName("Tao la bo cua tui may");
+            adminUser.setName("Admin has full permission");
             adminUser.setPassword(this.passwordEncoder.encode("123456"));
 
             Role adminRole = this.roleRepository.findByName("ADMIN");

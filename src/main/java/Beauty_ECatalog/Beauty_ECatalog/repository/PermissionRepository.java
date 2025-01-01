@@ -15,4 +15,6 @@ public interface PermissionRepository extends JpaRepository<Permission, Long>, J
     boolean existsById(long id);
 
     List<Permission> findByIdIn(List<Long> list);
+
+    Permission findByApiPathAndMethod(String apiPath, String method);
 }
