@@ -1,7 +1,6 @@
 package Beauty_ECatalog.Beauty_ECatalog.service;
 
-import java.io.ObjectInputFilter.Status;
-import java.time.Instant;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -169,5 +168,4 @@ public class SaleTicketService {
         this.saleTicketRepository.delete(saleTicket);
     }
 
-    
 }
